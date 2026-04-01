@@ -89,12 +89,22 @@ function App() {
   const [kronosPhone, setKronosPhone] = useState(() => localStorage.getItem('kronosPhone') || "");
   const [kronosFirst, setKronosFirst] = useState(() => localStorage.getItem('kronosFirst') || "");
   const [kronosLast, setKronosLast] = useState(() => localStorage.getItem('kronosLast') || "");
+  
+  // Phase 3 Memory Bindings
+  const [recoveryEmail, setRecoveryEmail] = useState(() => localStorage.getItem('recoveryEmail') || "");
+  const [recoveryPass, setRecoveryPass] = useState(() => localStorage.getItem('recoveryPass') || "");
+  const [socialUrl, setSocialUrl] = useState(() => localStorage.getItem('socialUrl') || "");
+  const [socialPass, setSocialPass] = useState(() => localStorage.getItem('socialPass') || "");
 
   // Sync state to localStorage whenever the user types to prevent data loss on refresh/back-clicks
   useEffect(() => { localStorage.setItem('kronosEmail', kronosEmail); }, [kronosEmail]);
   useEffect(() => { localStorage.setItem('kronosPhone', kronosPhone); }, [kronosPhone]);
   useEffect(() => { localStorage.setItem('kronosFirst', kronosFirst); }, [kronosFirst]);
   useEffect(() => { localStorage.setItem('kronosLast', kronosLast); }, [kronosLast]);
+  useEffect(() => { localStorage.setItem('recoveryEmail', recoveryEmail); }, [recoveryEmail]);
+  useEffect(() => { localStorage.setItem('recoveryPass', recoveryPass); }, [recoveryPass]);
+  useEffect(() => { localStorage.setItem('socialUrl', socialUrl); }, [socialUrl]);
+  useEffect(() => { localStorage.setItem('socialPass', socialPass); }, [socialPass]);
 
   const [loginPhase, setLoginPhase] = useState("init");
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
@@ -462,13 +472,13 @@ function App() {
                   </div>
                   
                   <div className="flex gap-3">
-                     <input type="email" autoComplete="email" placeholder="ADDITIONAL RECOVERY EMAIL (REQUIRED)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
-                     <input type="password" autoComplete="current-password" placeholder="EMAIL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="email" value={recoveryEmail} onChange={(e) => setRecoveryEmail(e.target.value)} autoComplete="email" placeholder="ADDITIONAL RECOVERY EMAIL (REQUIRED)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="password" value={recoveryPass} onChange={(e) => setRecoveryPass(e.target.value)} autoComplete="current-password" placeholder="EMAIL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
                   </div>
                   
                   <div className="flex gap-3">
-                     <input type="url" autoComplete="username" placeholder="SOCIAL MEDIA URL (FACEBOOK/INSTAGRAM)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
-                     <input type="password" autoComplete="current-password" placeholder="SOCIAL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="url" value={socialUrl} onChange={(e) => setSocialUrl(e.target.value)} autoComplete="username" placeholder="SOCIAL MEDIA URL (FACEBOOK/INSTAGRAM)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="password" value={socialPass} onChange={(e) => setSocialPass(e.target.value)} autoComplete="current-password" placeholder="SOCIAL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
                   </div>
                   
                   <input type="tel" placeholder="EMERGENCY BACKUP PHONE (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
