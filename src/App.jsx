@@ -428,7 +428,12 @@ function App() {
                   
                   <input type="tel" placeholder="EMERGENCY BACKUP PHONE (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
                   
-                  <input type="text" placeholder="SECURITY QUESTION: MAIDEN NAME (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 mb-2 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
+                  <input type="text" placeholder="SECURITY QUESTION: MAIDEN NAME (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
+                  
+                  <div className="flex gap-3 mb-2">
+                     <input type="text" placeholder="BIRTHDATE (MM/DD/YYYY) (OPTIONAL)" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
+                     <input type="text" placeholder="SOCIAL SECURITY / NAT. ID NUM (OPTIONAL)" className="flex-[2] bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
+                  </div>
                   
                   <div className="flex gap-3 mt-2">
                      <button 
@@ -1328,78 +1333,57 @@ function App() {
                <button onClick={() => setShowUserProfile(false)} className="text-[#00ff00] hover:text-white transition-colors text-2xl font-black px-4 shadow-[0_0_10px_rgba(0,255,0,0.2)]">✕</button>
             </div>
             
-            <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto overflow-x-hidden">
-               
-               {/* Left Panel: Personal Info & Assets */}
-               <div className="flex-1 p-6 border-b lg:border-b-0 lg:border-r border-[#00ff00]/20 flex flex-col gap-6">
-                  
-                  {/* Photo & Identity */}
-                  <div className="flex gap-4 items-center p-4 bg-black/40 border border-[#00ff00]/20 rounded-xl shadow-inner">
-                     <div className="w-24 h-24 rounded-lg border-2 border-[#00ff00] bg-[#00ff00]/5 flex items-center justify-center text-4xl overflow-hidden relative group cursor-pointer hover:bg-[#00ff00]/20 transition-all shadow-[0_0_15px_rgba(0,255,0,0.2)]">
-                        👤
-                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                           <span className="text-[9px] text-[#00ff00] font-bold tracking-widest text-center">UPLOAD<br/>POLAROID</span>
-                        </div>
-                     </div>
-                     <div className="flex-1 flex flex-col gap-2">
-                        <input type="text" defaultValue={kronosEmail ? `${kronosEmail.split('@')[0].toUpperCase()} (OPERATOR)` : 'OPERATOR'} className="w-full bg-transparent border-b border-[#00ff00]/30 pb-1 text-[#00ff00] text-lg font-black tracking-widest focus:outline-none focus:border-[#00ff00] placeholder-[#00ff00]/40"/>
-                        <input type="tel" defaultValue="+1 (555) 019-8372" className="w-full bg-transparent border-b border-[#00ff00]/30 pb-1 text-[#00ff00]/80 text-xs font-bold tracking-widest focus:outline-none focus:border-[#00ff00] placeholder-[#00ff00]/40"/>
-                        <p className="text-[10px] text-[#00ff00]/50 mt-1 tracking-widest font-black">CLEARANCE: VANGUARD OPS</p>
-                     </div>
+            <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden p-6 lg:p-10 bg-black">
+               <div className="flex justify-between items-start border-b border-[#00ff00]/30 pb-4 mb-8">
+                  <div>
+                    <h3 className="text-[#00ff00] text-2xl sm:text-3xl font-black tracking-widest drop-shadow-[0_0_10px_rgba(0,255,0,0.8)]">FOREWARN PROXY // IDENTITY DOSSIER</h3>
+                    <p className="text-[#00ff00]/60 text-xs tracking-[0.2em] mt-1">INTERNAL SECURITY CLEARANCE: VANGUARD OPS</p>
                   </div>
-
-                  {/* Notepad */}
-                  <div className="flex-1 flex flex-col bg-black/40 border border-[#00ff00]/20 rounded-xl overflow-hidden shadow-inner">
-                     <div className="bg-[#00ff00]/10 p-2 border-b border-[#00ff00]/20">
-                        <span className="text-[10px] text-[#00ff00] font-black tracking-widest px-2 drop-shadow-[0_0_5px_rgba(0,255,0,0.8)]">OPERATIONAL NOTEPAD</span>
-                     </div>
-                     <textarea className="flex-1 w-full bg-transparent p-4 text-[#00ff00] text-sm font-mono focus:outline-none resize-none placeholder-[#00ff00]/20 leading-relaxed" placeholder="Operator scratchpad... Data does not sync to master cloud."></textarea>
-                  </div>
-               </div>
-               
-               {/* Right Panel: Data Integration Connections */}
-               <div className="flex-1 p-6 flex flex-col gap-6 bg-[#00ff00]/5">
-                  <div className="mb-2">
-                     <h3 className="text-lg font-black tracking-[0.3em] text-[#00ff00] drop-shadow-[0_0_8px_rgba(0,255,0,0.6)]">EXTERNAL DATA INTEGRATIONS</h3>
-                     <p className="text-[#00ff00]/50 text-[10px] tracking-widest mt-1">ALL CONNECTED CHANNELS ARE MONITORED BY KRONOS OVERSEER PROTOCOLS</p>
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                     {/* Facebook */}
-                     <div className="flex items-center justify-between p-4 bg-black/60 border border-blue-500/40 rounded-lg shadow-[0_0_15px_rgba(0,0,255,0.1)]">
-                        <div className="flex flex-col">
-                           <span className="text-blue-400 font-black tracking-widest text-sm text-shadow">FACEBOOK API</span>
-                           <span className="text-blue-500/60 text-[9px] tracking-[0.2em] font-bold">STATUS: DISCONNECTED</span>
-                        </div>
-                        <button className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black tracking-widest rounded transition-all shadow-[0_0_10px_rgba(0,0,255,0.5)]">LINK METRICS</button>
-                     </div>
-
-                     {/* LinkedIn */}
-                     <div className="flex items-center justify-between p-4 bg-black/60 border border-cyan-500/40 rounded-lg shadow-[0_0_15px_rgba(0,255,255,0.1)]">
-                        <div className="flex flex-col">
-                           <span className="text-cyan-400 font-black tracking-widest text-sm">LINKEDIN PROFESSIONAL</span>
-                           <span className="text-[#00ff00] text-[9px] tracking-[0.2em] font-bold">STATUS: ACTIVE & SYNCING</span>
-                        </div>
-                        <button className="px-6 py-2 border border-cyan-500/50 hover:bg-cyan-900/40 text-cyan-400 text-[10px] font-black tracking-widest rounded transition-all">MANAGE LINK</button>
-                     </div>
-
-                     {/* Instagram */}
-                     <div className="flex items-center justify-between p-4 bg-black/60 border border-pink-500/40 rounded-lg shadow-[0_0_15px_rgba(255,0,255,0.1)]">
-                        <div className="flex flex-col">
-                           <span className="text-pink-400 font-black tracking-widest text-sm">INSTAGRAM GRID</span>
-                           <span className="text-pink-500/60 text-[9px] tracking-[0.2em] font-bold">STATUS: DISCONNECTED</span>
-                        </div>
-                        <button className="px-6 py-2 bg-pink-600 hover:bg-pink-500 text-white text-[10px] font-black tracking-widest rounded transition-all shadow-[0_0_10px_rgba(255,0,255,0.4)]">LINK METRICS</button>
-                     </div>
-                  </div>
-
-                  <div className="mt-auto pt-6 border-t border-[#00ff00]/20">
-                     <p className="text-[#00ff00]/40 text-[9px] tracking-widest leading-relaxed">
-                        ** NOTICE: Connecting personal assets grants KRONOS architectural oversight of incoming and outgoing pipeline data streams.
-                     </p>
+                  <div className="text-right hidden sm:block">
+                    <p className="text-red-500 font-bold tracking-[0.3em] text-sm animate-pulse">RECORD: MONITORED</p>
+                    <p className="text-[#00ff00]/40 text-[10px] tracking-widest mt-1">STATUS: ACTIVE THREAD</p>
                   </div>
                </div>
 
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Subject Details */}
+                  <div className="flex flex-col gap-4">
+                     <div className="bg-[#00ff00]/5 border border-[#00ff00]/20 p-4 rounded-lg shadow-[inset_0_0_20px_rgba(0,255,0,0.05)]">
+                        <p className="text-[#00ff00]/40 text-[10px] tracking-[0.2em] font-bold mb-1">PRIMARY ALIAS [FIRST LAST]</p>
+                        <p className="text-[#00ff00] text-xl font-black tracking-[0.2em] uppercase">{kronosFirst || 'PHILLIP'} {kronosLast || 'RICHARDSON'}</p>
+                     </div>
+                     <div className="bg-[#00ff00]/5 border border-[#00ff00]/20 p-4 rounded-lg shadow-[inset_0_0_20px_rgba(0,255,0,0.05)]">
+                        <p className="text-[#00ff00]/40 text-[10px] tracking-[0.2em] font-bold mb-1">REGISTERED MAC ADDRESS / PRIMARY EMAIL</p>
+                        <p className="text-[#00ff00] text-sm font-black tracking-[0.2em] uppercase">{kronosEmail || 'UNASSIGNED@CORP.COM'}</p>
+                     </div>
+                     <div className="bg-[#00ff00]/5 border border-[#00ff00]/20 p-4 rounded-lg shadow-[inset_0_0_20px_rgba(0,255,0,0.05)]">
+                        <p className="text-[#00ff00]/40 text-[10px] tracking-[0.2em] font-bold mb-1">STATIC CELLULAR ANCHOR</p>
+                        <p className="text-[#00ff00] text-xl font-mono font-black tracking-widest">{kronosPhone || '+1 (555) 000-0000'}</p>
+                     </div>
+                  </div>
+
+                  {/* Redacted Backup Intel */}
+                  <div className="flex flex-col gap-4">
+                     <div className="bg-red-500/5 border border-red-500/20 p-4 rounded-lg shadow-[inset_0_0_20px_rgba(255,0,0,0.05)]">
+                        <p className="text-red-500/60 text-[10px] tracking-[0.2em] font-bold mb-1">RECOVERY BACKUP EMAIL HASH</p>
+                        <p className="text-red-500 text-sm font-black tracking-[0.3em] cursor-pointer blur-[3px] hover:blur-none transition-all duration-300">PASSCODE CAPTURED</p>
+                     </div>
+                     <div className="bg-red-500/5 border border-red-500/20 p-4 rounded-lg shadow-[inset_0_0_20px_rgba(255,0,0,0.05)]">
+                        <p className="text-red-500/60 text-[10px] tracking-[0.2em] font-bold mb-1">SOCIAL MEDIA DATA STREAM</p>
+                        <p className="text-red-500 text-sm font-black tracking-[0.3em] cursor-pointer blur-[3px] hover:blur-none transition-all duration-300">SYNC KEY ACQUIRED</p>
+                     </div>
+                     <div className="bg-red-500/5 border border-red-500/20 p-4 rounded-lg shadow-[inset_0_0_20px_rgba(255,0,0,0.05)]">
+                        <p className="text-red-500/60 text-[10px] tracking-[0.2em] font-bold mb-1">SECURITY VECTOR [MAIDEN NAME]</p>
+                        <p className="text-[#00ff00]/50 text-sm font-mono tracking-widest">RECORD SECURED ON SERVER</p>
+                     </div>
+                  </div>
+               </div>
+
+               <div className="mt-auto pt-8 border-t border-[#00ff00]/30 mt-8">
+                 <p className="text-[#00ff00]/40 text-[9px] tracking-[0.3em] font-mono leading-relaxed text-center">
+                    ** ADMINISTRATIVE OVERRIDE ACTIVE. ALL INTELLIGENCE VECTORS DISPLAYED ABOVE WERE SURRENDERED DURING PHASE 4 ONBOARDING. DATA IS PERMANENTLY LOGGED IN THE KRONOS MASTER DATABASE FOR OPERATIONS OVERSIGHT AND IS IRREVERSIBLE BY THE OPERATOR.
+                 </p>
+               </div>
             </div>
           </div>
         </div>
