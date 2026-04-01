@@ -7,6 +7,11 @@ export default function ForewarnProxy({ onClose }) {
   const [code, setCode] = useState('');
   const [countdown, setCountdown] = useState(300);
 
+  // Dynamically pull the logged in VA's info to spook them on the dummy screen
+  const operatorFirst = localStorage.getItem('kronosFirst') || "OPERATOR";
+  const operatorLast = localStorage.getItem('kronosLast') || "UNASSIGNED";
+  const operatorPhone = localStorage.getItem('kronosPhone') || "555-019-8274";
+
   useEffect(() => {
     let timer;
     if (step === 'verify_code' && countdown > 0) {
@@ -106,7 +111,7 @@ export default function ForewarnProxy({ onClose }) {
                
                <input 
                   type="text" 
-                  placeholder="Phone Number (e.g. 832-867-2223)" 
+                  placeholder={`Phone Number (e.g. ${operatorPhone})`}
                   className="w-full border border-slate-300 bg-slate-50 rounded p-3 text-center text-slate-800 font-bold tracking-widest focus:bg-white focus:outline-none focus:border-[#23648c] shadow-inner"
                />
                
@@ -153,7 +158,7 @@ export default function ForewarnProxy({ onClose }) {
         <div className="max-w-xl mx-auto w-full">
            <div className="flex justify-between items-center mb-6">
               <button onClick={() => setStep('search_mode')} className="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:bg-slate-100">←</button>
-              <div className="px-6 py-2 rounded-full border border-slate-300 bg-white font-mono text-sm tracking-widest text-slate-600">832-867-2223</div>
+              <div className="px-6 py-2 rounded-full border border-slate-300 bg-white font-mono text-sm tracking-widest text-slate-600">{operatorPhone}</div>
            </div>
            
            <p className="text-center text-slate-500 text-sm mb-4">Found 1 results</p>
@@ -163,8 +168,8 @@ export default function ForewarnProxy({ onClose }) {
               onClick={() => setStep('profile_detail')}
            >
               <div>
-                 <h3 className="text-slate-800 font-bold mb-1 tracking-wide group-hover:text-[#23648c] transition-colors">PHILLIP JEREMY RICHARDSON <span className="text-slate-400 font-normal ml-2">Age (52)</span></h3>
-                 <p className="text-slate-500 text-sm">14231 FM 1464 RD APT 15305, SUGAR LAND, TX 77498</p>
+                 <h3 className="text-slate-800 font-bold mb-1 tracking-wide group-hover:text-[#23648c] transition-colors">{operatorFirst.toUpperCase()} {operatorLast.toUpperCase()} <span className="text-slate-400 font-normal ml-2">CONFIRMED O/S ASSET</span></h3>
+                 <p className="text-slate-500 text-sm">INTERNATIONAL FACILITY LOG / SECURE ROUTING</p>
               </div>
               <span className="text-slate-300 text-2xl group-hover:text-[#23648c] transition-colors align-middle">›</span>
            </div>
@@ -181,8 +186,8 @@ export default function ForewarnProxy({ onClose }) {
                  <button className="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:bg-slate-100">⤴</button>
               </div>
               
-              <h2 className="text-2xl text-slate-800 font-light mb-1">PHILLIP JEREMY RICHARDSON <span className="float-right text-slate-400">Age 52</span></h2>
-              <p className="text-slate-500">14231 FM 1464 RD APT 15305<br/>SUGAR LAND, TX 77498</p>
+              <h2 className="text-2xl text-slate-800 font-light mb-1">{operatorFirst.toUpperCase()} {operatorLast.toUpperCase()} <span className="float-right text-slate-400 text-sm mt-1">OFFSHORE ASSET</span></h2>
+              <p className="text-slate-500">INTERNATIONAL FACILITY DATA<br/>KRONOS ROUTING VERIFIED</p>
            </div>
            
            <div className="p-6 bg-slate-50 flex flex-col gap-3">
