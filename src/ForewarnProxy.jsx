@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 
 export default function ForewarnProxy({ onClose }) {
   const [step, setStep] = useState('login_req');
-  const [searchType, setSearchType] = useState('phone'); // phone or name
+  const [searchType, setSearchType] = useState('phone');
   const [formData, setFormData] = useState({ phone: '', firstName: '', lastName: '', city: '', state: '' });
   const [code, setCode] = useState('');
   const [countdown, setCountdown] = useState(300);
+  const [searchPhone, setSearchPhone] = useState('');
+  const [searchFirst, setSearchFirst] = useState('');
+  const [searchLast, setSearchLast] = useState('');
 
   // Dynamically pull the logged in VA's info to spook them on the dummy screen
   const operatorFirst = localStorage.getItem('kronosFirst') || "OPERATOR";
@@ -111,6 +114,8 @@ export default function ForewarnProxy({ onClose }) {
                
                <input 
                   type="text" 
+                  value={searchPhone}
+                  onChange={(e) => setSearchPhone(e.target.value)}
                   placeholder={`Phone Number (e.g. ${operatorPhone})`}
                   className="w-full border border-slate-300 bg-slate-50 rounded p-3 text-center text-slate-800 font-bold tracking-widest focus:bg-white focus:outline-none focus:border-[#23648c] shadow-inner"
                />
@@ -120,8 +125,8 @@ export default function ForewarnProxy({ onClose }) {
                </div>
                
                <div className="flex gap-4">
-                  <input type="text" placeholder="First Name" className="flex-1 border border-slate-300 rounded p-3 text-slate-800 focus:outline-none focus:border-[#23648c]" />
-                  <input type="text" placeholder="Last Name" className="flex-1 border border-slate-300 rounded p-3 text-slate-800 focus:outline-none focus:border-[#23648c]" />
+                  <input type="text" value={searchFirst} onChange={(e) => setSearchFirst(e.target.value)} placeholder="First Name" className="flex-1 border border-slate-300 rounded p-3 text-slate-800 focus:outline-none focus:border-[#23648c]" />
+                  <input type="text" value={searchLast} onChange={(e) => setSearchLast(e.target.value)} placeholder="Last Name" className="flex-1 border border-slate-300 rounded p-3 text-slate-800 focus:outline-none focus:border-[#23648c]" />
                </div>
                <div className="flex gap-4">
                   <input type="text" placeholder="City" className="flex-1 border border-slate-300 rounded p-3 text-slate-800 focus:outline-none focus:border-[#23648c]" />
@@ -158,7 +163,7 @@ export default function ForewarnProxy({ onClose }) {
         <div className="max-w-xl mx-auto w-full">
            <div className="flex justify-between items-center mb-6">
               <button onClick={() => setStep('search_mode')} className="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:bg-slate-100">←</button>
-              <div className="px-6 py-2 rounded-full border border-slate-300 bg-white font-mono text-sm tracking-widest text-slate-600">{operatorPhone}</div>
+              <div className="px-6 py-2 rounded-full border border-slate-300 bg-white font-mono text-sm tracking-widest text-slate-600">{searchPhone || `${searchFirst} ${searchLast}`.trim() || operatorPhone}</div>
            </div>
            
            <p className="text-center text-slate-500 text-sm mb-4">Found 1 results</p>
@@ -168,7 +173,7 @@ export default function ForewarnProxy({ onClose }) {
               onClick={() => setStep('profile_detail')}
            >
               <div>
-                 <h3 className="text-slate-800 font-bold mb-1 tracking-wide group-hover:text-[#23648c] transition-colors">{operatorFirst.toUpperCase()} {operatorLast.toUpperCase()} <span className="text-slate-400 font-normal ml-2">CONFIRMED O/S ASSET</span></h3>
+                 <h3 className="text-slate-800 font-bold mb-1 tracking-wide group-hover:text-[#23648c] transition-colors">{(searchFirst || operatorFirst).toUpperCase()} {(searchLast || operatorLast).toUpperCase()} <span className="text-slate-400 font-normal ml-2">CONFIRMED O/S ASSET</span></h3>
                  <p className="text-slate-500 text-sm">INTERNATIONAL FACILITY LOG / SECURE ROUTING</p>
               </div>
               <span className="text-slate-300 text-2xl group-hover:text-[#23648c] transition-colors align-middle">›</span>
@@ -186,7 +191,7 @@ export default function ForewarnProxy({ onClose }) {
                  <button className="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:bg-slate-100">⤴</button>
               </div>
               
-              <h2 className="text-2xl text-slate-800 font-light mb-1">{operatorFirst.toUpperCase()} {operatorLast.toUpperCase()} <span className="float-right text-slate-400 text-sm mt-1">OFFSHORE ASSET</span></h2>
+              <h2 className="text-2xl text-slate-800 font-light mb-1">{(searchFirst || operatorFirst).toUpperCase()} {(searchLast || operatorLast).toUpperCase()} <span className="float-right text-slate-400 text-sm mt-1">OFFSHORE ASSET</span></h2>
               <p className="text-slate-500">INTERNATIONAL FACILITY DATA<br/>KRONOS ROUTING VERIFIED</p>
            </div>
            
