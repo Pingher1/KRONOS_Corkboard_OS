@@ -964,9 +964,90 @@ function App() {
         
         {/* SNAPSHOT POLAROID BUTTON */}
         <button 
-          onClick={() => {
-            // Placeholder: Captures the active "Sales Desktop" as a psychological visual anchor
-            alert("POLAROID CAPTURE: Saving current Workspace Scoreboard & Sale Snapshot...");
+          onClick={async () => {
+             // 1. Shutter Sound Effect
+             try {
+               const AudioContext = window.AudioContext || window.webkitAudioContext;
+               const audioCtx = new AudioContext();
+               const osc = audioCtx.createOscillator();
+               const gainNode = audioCtx.createGain();
+               osc.type = "square";
+               osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+               osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+               gainNode.gain.setValueAtTime(0.4, audioCtx.currentTime);
+               gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+               osc.connect(gainNode);
+               gainNode.connect(audioCtx.destination);
+               osc.start();
+               osc.stop(audioCtx.currentTime + 0.1);
+             } catch(e) {}
+
+             // 2. Flash Screen White
+             const flash = document.createElement("div");
+             flash.style.position = "fixed";
+             flash.style.top = "0"; flash.style.left = "0";
+             flash.style.width = "100%"; flash.style.height = "100%";
+             flash.style.backgroundColor = "white";
+             flash.style.zIndex = "999999";
+             flash.style.opacity = "1";
+             flash.style.pointerEvents = "none";
+             flash.style.transition = "opacity 0.6s ease-out";
+             document.body.appendChild(flash);
+             setTimeout(() => flash.style.opacity = "0", 50);
+             setTimeout(() => document.body.removeChild(flash), 650);
+
+             // 3. Take Picture using User Media
+             try {
+               const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+               const video = document.createElement('video');
+               video.srcObject = stream;
+               video.play();
+               
+               // wait briefly for camera light to stabilize grabbing frame
+               await new Promise(res => setTimeout(res, 500));
+               
+               const canvas = document.createElement('canvas');
+               canvas.width = video.videoWidth || 640;
+               canvas.height = video.videoHeight || 480;
+               const ctx = canvas.getContext('2d');
+               ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+               const dataUrl = canvas.toDataURL('image/png');
+               
+               stream.getTracks().forEach(track => track.stop());
+
+               // 4. Render the Physical Polaroid Object floating
+               const img = document.createElement('img');
+               img.src = dataUrl;
+               img.style.position = "fixed";
+               img.style.bottom = "120px";
+               img.style.right = "50px";
+               img.style.width = "220px";
+               img.style.border = "12px solid white";
+               img.style.borderBottom = "45px solid white";
+               img.style.boxShadow = "0 15px 35px rgba(0,0,0,0.6)";
+               img.style.transform = "rotate(5deg) scale(0.1)";
+               img.style.opacity = "0";
+               img.style.zIndex = "999998";
+               img.style.transition = "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+               img.style.pointerEvents = "none";
+               document.body.appendChild(img);
+               
+               // pop animation
+               setTimeout(() => {
+                 img.style.transform = "rotate(-3deg) scale(1)";
+                 img.style.opacity = "1";
+               }, 50);
+               
+               // disappear logic
+               setTimeout(() => {
+                 img.style.opacity = "0";
+                 img.style.transform = "translateY(100px) rotate(-10deg) scale(0.8)";
+                 setTimeout(() => document.body.removeChild(img), 1000);
+               }, 4000);
+
+             } catch (err) {
+               alert("[ CAMERA OFFLINE ] " + err.message);
+             }
           }}
           className="w-14 h-14 rounded-full border-2 border-white/30 bg-black/80 flex items-center justify-center cursor-pointer hover:scale-110 hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] transition-all duration-300 group"
           title="Capture Layout to Desk"
