@@ -78,6 +78,8 @@ function App() {
   const [draggedItemIndex, setDraggedItemIndex] = useState(null);
   const [isRetracted, setIsRetracted] = useState(false); // Controls OS Fullscreen Retraction
   const [showErrorDemo, setShowErrorDemo] = useState(false);
+  const [polaroidArchive, setPolaroidArchive] = useState([]);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
   const [showIntegrationsPortal, setShowIntegrationsPortal] = useState(false); // Controls the Persona/Integrations overlay
 
@@ -1053,7 +1055,7 @@ function App() {
                  img.style.transform = "translateY(100px) rotate(-10deg) scale(0.8)";
                  setTimeout(() => {
                     document.body.removeChild(img);
-                    setGlobalTools(prev => [...prev, "POLAROID_" + dataUrl]);
+                    setPolaroidArchive(prev => [...prev, dataUrl]);
                  }, 1000);
                }, 4000);
 
@@ -1068,6 +1070,26 @@ function App() {
             <span className="text-xl -mt-1 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] filter transition-all duration-300 group-hover:brightness-150">📷</span>
             <span className="absolute -bottom-5 text-[8px] font-bold tracking-widest text-white/50 group-hover:text-white whitespace-nowrap drop-shadow-md">
               POLAROID
+            </span>
+          </div>
+        </button>
+
+        {/* POLAROID FILE ARCHIVE BUTTON */}
+        <button 
+          onClick={() => setShowArchiveModal(true)}
+          className="w-14 h-14 rounded-xl border-2 border-white/20 bg-black/80 flex items-center justify-center cursor-pointer hover:scale-110 hover:border-[#00ff00] transition-all duration-300 group relative shadow-[0_5px_15px_rgba(0,0,0,0.8)]"
+          title="Archive Files"
+        >
+          <div className="flex flex-col items-center justify-center w-full h-full relative">
+            {polaroidArchive.length > 0 ? (
+               polaroidArchive.slice(-3).map((imgUrl, idx) => (
+                  <img key={idx} src={imgUrl} className="absolute inset-x-0 mx-auto w-[85%] h-[85%] object-cover shadow-lg border border-white/80 rounded block" style={{ transform: `rotate(${(idx - 1) * 12}deg) scale(0.9) translateY(${idx * 2}px)` }} />
+               ))
+            ) : (
+               <span className="text-xl -mt-1 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] filter transition-all duration-300 group-hover:brightness-150">📁</span>
+            )}
+            <span className="absolute -bottom-5 text-[8px] font-bold tracking-widest text-[#00ff00]/50 group-hover:text-[#00ff00] whitespace-nowrap drop-shadow-md">
+              MY FILES
             </span>
           </div>
         </button>
@@ -1087,6 +1109,39 @@ function App() {
           </div>
         </button>
       </div>
+
+      {showArchiveModal && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-8 pointer-events-auto bg-black/80 backdrop-blur-xl">
+          <div className="relative w-full max-w-6xl h-[85vh] flex flex-col rounded-3xl shadow-[0_20px_80px_rgba(0,0,0,0.9)] border border-[#00ff00]/40 bg-[#020504] overflow-hidden">
+            <div className="flex-none p-6 border-b border-[#00ff00]/20 flex justify-between items-center bg-black/40">
+               <h2 className="text-xl sm:text-2xl font-black tracking-[0.4em] uppercase text-[#00ff00] drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]">MY FILES [ CAPTURE ARCHIVE ]</h2>
+               <button onClick={() => setShowArchiveModal(false)} className="text-[#00ff00] hover:text-white transition-colors text-2xl font-black px-4 shadow-[0_0_10px_rgba(0,255,0,0.2)]">✕</button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-8 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 bg-[#010201]">
+               {polaroidArchive.length === 0 ? (
+                  <div className="col-span-full h-full flex flex-col items-center justify-center opacity-50">
+                     <span className="text-5xl mb-4">🗄️</span>
+                     <p className="text-[#00ff00] text-sm tracking-widest">ARCHIVE IS EMPTY</p>
+                  </div>
+               ) : (
+                  polaroidArchive.map((url, i) => (
+                     <div key={i} className="flex flex-col items-center bg-black border border-white/20 p-3 pb-8 rounded-sm shadow-[0_15px_30px_rgba(0,0,0,0.8)] relative group transform transition hover:scale-[1.05] hover:z-10 hover:border-[#00ff00]/50 hover:shadow-[0_0_30px_rgba(0,255,0,0.3)] rotate-1 hover:rotate-0">
+                        <img src={url} className="w-full h-auto object-cover border border-white/10" />
+                        <span className="absolute bottom-2 left-0 right-0 text-center text-white/50 text-[10px] font-mono tracking-widest">SC-{(146177 + i).toString().padStart(6, '0')}</span>
+                        <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                           <a href={url} download={`OS_RECEIPT_${146177 + i}.png`} onClick={(e) => e.stopPropagation()} className="px-6 py-2 bg-[#00ff00] text-black font-bold tracking-widest text-xs rounded hover:shadow-[0_0_20px_#00ff00] transition">
+                              SAVE TO DRIVE
+                           </a>
+                        </div>
+                     </div>
+                  ))
+               )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {showUserProfile && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-8 pointer-events-auto bg-black/80 backdrop-blur-xl">
           <div className="relative w-full max-w-5xl h-[85vh] flex flex-col rounded-3xl shadow-[0_20px_80px_rgba(0,0,0,0.9)] border border-[#00ff00]/40 bg-[#020504] overflow-hidden">
