@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TRT_Veil from './TRT_Veil';
 import VA_Portal from './VA_Portal';
 import ForewarnProxy from './ForewarnProxy';
-
+import SocialCalendar from './SocialCalendar';
 const MENU_ITEMS = [
   "PROPERTY PRO VA",
   "FOLLOW UP BOSS",
@@ -84,11 +84,18 @@ function App() {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showDownloadAlert, setShowDownloadAlert] = useState(false);
   const [showForewarnProxy, setShowForewarnProxy] = useState(false);
-  const [kronosEmail, setKronosEmail] = useState("");
+  const [kronosEmail, setKronosEmail] = useState(() => localStorage.getItem('kronosEmail') || "");
   const [kronosPass, setKronosPass] = useState("");
-  const [kronosPhone, setKronosPhone] = useState("");
-  const [kronosFirst, setKronosFirst] = useState("");
-  const [kronosLast, setKronosLast] = useState("");
+  const [kronosPhone, setKronosPhone] = useState(() => localStorage.getItem('kronosPhone') || "");
+  const [kronosFirst, setKronosFirst] = useState(() => localStorage.getItem('kronosFirst') || "");
+  const [kronosLast, setKronosLast] = useState(() => localStorage.getItem('kronosLast') || "");
+
+  // Sync state to localStorage whenever the user types to prevent data loss on refresh/back-clicks
+  useEffect(() => { localStorage.setItem('kronosEmail', kronosEmail); }, [kronosEmail]);
+  useEffect(() => { localStorage.setItem('kronosPhone', kronosPhone); }, [kronosPhone]);
+  useEffect(() => { localStorage.setItem('kronosFirst', kronosFirst); }, [kronosFirst]);
+  useEffect(() => { localStorage.setItem('kronosLast', kronosLast); }, [kronosLast]);
+
   const [loginPhase, setLoginPhase] = useState("init");
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
   const [showIntegrationsPortal, setShowIntegrationsPortal] = useState(false); // Controls the Persona/Integrations overlay
