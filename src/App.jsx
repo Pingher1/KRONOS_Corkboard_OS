@@ -499,10 +499,7 @@ function App() {
                      </button>
                      <button 
                         onClick={(e) => {
-                           const emailInput = e.target.parentElement.parentElement.querySelector('input[type="email"]').value;
-                           const socialInput = e.target.parentElement.parentElement.querySelector('input[type="url"]').value;
-                           const passInputs = Array.from(e.target.parentElement.parentElement.querySelectorAll('input[type="password"]'));
-                           if (!emailInput || !socialInput || passInputs.some(p => !p.value)) {
+                           if (!recoveryEmail || !socialUrl || !recoveryPass || !socialPass) {
                               alert("CRITICAL SECURITY HALT: Additional Recovery Email, Social Media Sync, and corresponding Passcodes are strictly required to establish identity terminal.");
                               return;
                            }
