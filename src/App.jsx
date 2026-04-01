@@ -1285,7 +1285,7 @@ function App() {
           className="w-16 h-16 rounded-full border-2 border-[#00ff00]/50 bg-black/80 flex items-center justify-center cursor-pointer hover:scale-110 hover:border-[#00ff00] hover:shadow-[0_0_30px_rgba(0,255,0,0.6)] transition-all duration-300 group"
         >
           <div className="flex flex-col items-center justify-center w-full h-full relative">
-            <img src="/logo.png" alt="TRT" className="w-[85%] h-[85%] object-contain drop-shadow-[0_0_10px_rgba(0,255,0,0.8)] filter transition-all duration-300 group-hover:brightness-150" />
+            <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] filter transition-all duration-300 group-hover:brightness-150 group-hover:scale-125 pt-1">📹</span>
             <span className="absolute -bottom-5 text-[8px] font-bold tracking-widest text-[#00ff00]/70 group-hover:text-[#00ff00] whitespace-nowrap drop-shadow-md pb-[-10px]">
               GOOGLE MEETS
             </span>
