@@ -1119,7 +1119,7 @@ function App() {
         </div>
         {/* --- EAST WALL COMMAND MOD (SLICK ACTIVE BAR) --- */}
         <div className={`fixed right-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-6 z-[9900] pointer-events-auto p-4 rounded-3xl backdrop-blur-md ${theme === 'daylight' ? 'bg-white/40 border border-black/10 shadow-[0_10px_30px_rgba(0,0,0,0.1)]' : 'bg-black/90 border border-[#00ff00]/30 shadow-[0_0_30px_rgba(0,0,0,0.9)]'}`}>
-           {["👤", "ℹ️", "✉️", "📅", "📞", "💬", "🔍", "🌗"].map((icon, i) => (
+           {["👨🏻‍💻", "📊", "📨", "📆", "📲", "⚡", "🎯", "🌓"].map((icon, i) => (
              <button 
                key={i} 
                onClick={() => {

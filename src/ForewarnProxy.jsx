@@ -5,7 +5,7 @@ export default function ForewarnProxy({ onClose }) {
   const [searchType, setSearchType] = useState('phone'); // phone or name
   const [formData, setFormData] = useState({ phone: '', firstName: '', lastName: '', city: '', state: '' });
   const [code, setCode] = useState('');
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(300);
 
   useEffect(() => {
     let timer;
@@ -76,7 +76,7 @@ export default function ForewarnProxy({ onClose }) {
       </button>
       
       {countdown === 0 && (
-         <button onClick={() => setCountdown(30)} className="mt-4 text-[#23648c] text-xs font-bold uppercase tracking-wider">Resend IT Request</button>
+         <button onClick={() => setCountdown(300)} className="mt-4 text-[#23648c] text-xs font-bold uppercase tracking-wider">Resend IT Request</button>
       )}
     </div>
   );
