@@ -80,6 +80,7 @@ function App() {
   const [showErrorDemo, setShowErrorDemo] = useState(false);
   const [polaroidArchive, setPolaroidArchive] = useState([]);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [showDownloadAlert, setShowDownloadAlert] = useState(false);
   const [kronosEmail, setKronosEmail] = useState("");
   const [kronosPass, setKronosPass] = useState("");
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
@@ -1150,7 +1151,7 @@ function App() {
                         <img src={url} className="w-full h-auto object-cover border border-white/10" />
                         <span className="absolute bottom-2 left-0 right-0 text-center text-white/50 text-[10px] font-mono tracking-widest">SC-{(146177 + i).toString().padStart(6, '0')}</span>
                         <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                           <a href={url} download={`OS_RECEIPT_${146177 + i}.png`} onClick={(e) => e.stopPropagation()} className="px-6 py-2 bg-[#00ff00] text-black font-bold tracking-widest text-xs rounded hover:shadow-[0_0_20px_#00ff00] transition">
+                           <a href={url} download={`OS_RECEIPT_${146177 + i}.png`} onClick={(e) => { e.stopPropagation(); setShowDownloadAlert(true); }} className="px-6 py-2 bg-[#00ff00] text-black font-bold tracking-widest text-xs rounded hover:shadow-[0_0_20px_#00ff00] transition">
                               SAVE TO DRIVE
                            </a>
                         </div>
@@ -1158,6 +1159,24 @@ function App() {
                   ))
                )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {showDownloadAlert && (
+        <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl pointer-events-auto">
+          <div className="relative w-full max-w-2xl p-12 bg-[#020504] border-4 border-red-600 rounded-3xl shadow-[0_0_100px_rgba(255,0,0,0.4)] flex flex-col items-center animate-pulse">
+             <span className="text-7xl mb-6 drop-shadow-[0_0_20px_rgba(255,0,0,1)]">📥</span>
+             <h2 className="text-2xl sm:text-4xl font-black text-red-500 tracking-[0.2em] mb-4 text-center">DOWNLOAD COMPLETE</h2>
+             <p className="text-white text-lg text-center font-bold tracking-widest leading-loose mb-12">
+               YOUR POLAROID RECEIPT WAS SECURELY SAVED DIRECTLY TO YOUR COMPUTER'S <strong className="text-[#00ff00] border-b-2 border-[#00ff00]">"DOWNLOADS"</strong> FOLDER.
+             </p>
+             <button 
+                onClick={() => setShowDownloadAlert(false)} 
+                className="px-12 py-5 bg-red-600 text-white font-black tracking-[0.3em] uppercase rounded-xl hover:bg-white hover:text-red-600 transition-all text-xl shadow-[0_0_30px_rgba(255,0,0,0.8)]"
+             >
+                I UNDERSTAND
+             </button>
           </div>
         </div>
       )}
