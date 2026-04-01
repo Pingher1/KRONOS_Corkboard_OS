@@ -80,6 +80,8 @@ function App() {
   const [showErrorDemo, setShowErrorDemo] = useState(false);
   const [polaroidArchive, setPolaroidArchive] = useState([]);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [kronosEmail, setKronosEmail] = useState("");
+  const [kronosPass, setKronosPass] = useState("");
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
   const [showIntegrationsPortal, setShowIntegrationsPortal] = useState(false); // Controls the Persona/Integrations overlay
 
@@ -300,11 +302,29 @@ function App() {
             </div>
             
             <input type="tel" placeholder="DIRECT CELL NUMBER" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
-            <input type="email" placeholder="ENCRYPTED EMAIL ADDRESS" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
-            <input type="password" placeholder="SSN (LAST 4 DIGITS)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-10 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+            <input 
+               type="email" 
+               placeholder="ENCRYPTED EMAIL ADDRESS" 
+               value={kronosEmail}
+               onChange={(e) => setKronosEmail(e.target.value)}
+               className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
+            />
+            <input 
+               type="password" 
+               placeholder="SECURITY VAULT PASSWORD" 
+               value={kronosPass}
+               onChange={(e) => setKronosPass(e.target.value)}
+               className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-10 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
+            />
             
             <button 
-               onClick={() => setIsVerified(true)} 
+               onClick={() => {
+                  if (kronosEmail === "esha@therichardsonteam.com" && kronosPass === "0392") {
+                     setIsVerified(true);
+                  } else {
+                     alert("ACCESS DENIED: Invalid KRONOS Vault Credentials.");
+                  }
+               }} 
                className="w-full py-4 mb-4 bg-[#00ff00] hover:bg-white border-2 border-[#00ff00] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all shadow-[0_0_30px_rgba(0,255,0,0.5)] hover:shadow-[0_0_50px_rgba(255,255,255,0.8)]"
             >
                AUTHORIZE ACCESS
