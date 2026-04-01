@@ -86,6 +86,7 @@ function App() {
   const [showForewarnProxy, setShowForewarnProxy] = useState(false);
   const [kronosEmail, setKronosEmail] = useState("");
   const [kronosPass, setKronosPass] = useState("");
+  const [kronosPhone, setKronosPhone] = useState("");
   const [loginPhase, setLoginPhase] = useState("init");
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
   const [showIntegrationsPortal, setShowIntegrationsPortal] = useState(false); // Controls the Persona/Integrations overlay
@@ -308,7 +309,13 @@ function App() {
                      <input type="text" placeholder="LAST NAME" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
                   </div>
                   
-                  <input type="tel" placeholder="DIRECT CELL NUMBER" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                  <input 
+                     type="tel" 
+                     placeholder="DIRECT CELL NUMBER" 
+                     value={kronosPhone}
+                     onChange={(e) => setKronosPhone(e.target.value)}
+                     className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
+                  />
                   <input 
                      type="email" 
                      placeholder="ENCRYPTED EMAIL ADDRESS" 
@@ -330,11 +337,21 @@ function App() {
                            "kurt@therichardsonteamtx.com"
                         ];
                         
-                        if (allowedUsers.includes(kronosEmail.toLowerCase().trim())) {
+                        const allowedPhones = [
+                           "8328672223", // Phillip
+                           "5550198372"  // Placeholder Admin
+                        ];
+                        
+                        const parsedPhone = kronosPhone.replace(/\D/g, ""); // Strip formatted characters
+                        
+                        if (
+                           (kronosEmail && allowedUsers.includes(kronosEmail.toLowerCase().trim())) ||
+                           (parsedPhone && allowedPhones.includes(parsedPhone))
+                        ) {
                            setLoginPhase('dispatch');
                            setTimeout(() => setLoginPhase('pin'), 3500);
                         } else {
-                           alert("ACCESS DENIED: Email not found in Active Roster.\n\nERROR 403: UNRECOGNIZED TERMINAL.\nIf you are an authorized contractor, please text KRONOS Administration immediately at (832) 867-2223 to request a Whitelist update for your current email.");
+                           alert("ACCESS DENIED: Credentials not found in Active Roster.\n\nERROR 403: UNRECOGNIZED TERMINAL.\nIf you are an authorized contractor, please text KRONOS Administration immediately at (832) 867-2223 to request a Whitelist update for your current Email or Phone Number.");
                         }
                      }} 
                      className="w-full py-4 mb-4 bg-[#00ff00] hover:bg-white shadow-[0_0_30px_rgba(0,255,0,0.5)] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all"
