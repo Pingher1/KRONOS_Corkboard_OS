@@ -341,20 +341,34 @@ function App() {
                   <button 
                      onClick={() => {
                         const allowedUsers = [
-                           "esha@therichardsonteam.com",
-                           "esha@therichardsonteamtx.com",
-                           "esha@homeprosva.com",
                            "phillip@therichardsonteam.com",
                            "phillip@therichardsonteamtx.com",
+                           "therichardsonteamtx@gmail.com",
                            "phillip@homeprosva.com",
-                           "katelynn@therichardsonteam.com",
-                           "katelynn@therichardsonteamtx.com",
+                           "katelyn@therichardsonteamtx.com",
+                           "katelynn@therichardsonteam.com", // Keeping typo as fallback
+                           "kurt.peterson52@gmail.com",
                            "kurt@therichardsonteam.com",
-                           "kurt@therichardsonteamtx.com"
+                           "esha@homeprosva.com",
+                           "esha@therichardsonteam.com",
+                           "hamza@homeprosva.com",
+                           "hk8883471@gmail.com",
+                           "kashan@homeprosva.com",
+                           "ntxtnow1@gmail.com",
+                           "rafay@homeprosva.com",
+                           "rafayyabbaxi@gmail.com",
+                           "dluza@guildmortgage.net",
+                           "doug@dougluza.com",
+                           "jhp.hudson@gmail.com"
                         ];
                         
                         const allowedPhones = [
-                           "8328672223", // Phillip
+                           "8328672223", // Phillip / Esha Shared
+                           "3612902460", // Katelyn
+                           "2075952493", // Kurt
+                           "8326741203", // Hamza
+                           "3464521666", // Doug
+                           "8172474766", // John
                            "5550198372"  // Placeholder Admin
                         ];
                         
