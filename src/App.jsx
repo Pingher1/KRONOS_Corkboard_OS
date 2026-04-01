@@ -415,7 +415,17 @@ function App() {
                   <button 
                      onClick={() => {
                         const userPin = kronosPhone ? kronosPhone.replace(/\D/g, '').slice(-4) : "0392";
-                        if (kronosPass === userPin || kronosPass === "0392" || kronosPass === "$0392PinG!") {
+                        const authorizedVaultPins = [
+                           userPin,
+                           "0392",
+                           "$0392PinG!",
+                           "!1234$",
+                           "!2341$",
+                           "!3412$",
+                           "!4123$",
+                           "!12345$"
+                        ];
+                        if (authorizedVaultPins.includes(kronosPass)) {
                            setLoginPhase('onboard');
                         } else {
                            alert("ACCESS DENIED: Invalid KRONOS Vault Credentials.");
