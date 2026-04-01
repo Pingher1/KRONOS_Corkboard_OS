@@ -58,7 +58,7 @@ const playTickSound = () => {
 
 function App() {
   const [activeMenu, setActiveMenu] = useState("PROPERTY PRO VA");
-  const [globalTools, setGlobalTools] = useState(["FOLLOW UP BOSS", "HAR.COM", "ZILLOW PREMIER", "HOME SEARCH PORTAL", "PROPERTY PRO VA"]);
+  const [globalTools, setGlobalTools] = useState(["APPOINTMENT SET (SHOWING)", "AGENT APPROVED", "CONTRACT EXECUTED", "TRANSACTION CLOSED"]);
   const [expandedTiles, setExpandedTiles] = useState({});
   const [isLocked, setIsLocked] = useState(false);
   const [isLockingAnim, setIsLockingAnim] = useState(false);
@@ -196,6 +196,16 @@ function App() {
     setActiveMenu(item);
     setWheelOffset(index);
     setShowRibbons(true);
+    if (item === 'PROPERTY PRO VA') {
+       setGridLayout('BENTO BOX');
+       setGlobalTools([
+          "APPOINTMENT / SHOWING",
+          "OFFER APPROVED",
+          "AGENT CONTRACTED",
+          "TRANSACTION CLOSED"
+       ]);
+       return;
+    }
 
     if (item === 'USER PROFILE') {
       setShowUserProfile(true);
