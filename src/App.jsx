@@ -320,7 +320,14 @@ function App() {
             
             <button 
                onClick={() => {
-                  if (kronosEmail === "esha@therichardsonteam.com" && kronosPass === "0392") {
+                  const allowedUsers = [
+                     "esha@therichardsonteam.com",
+                     "phillip@therichardsonteam.com",
+                     "katelynn@therichardsonteam.com",
+                     "kurt@therichardsonteam.com"
+                  ];
+                  
+                  if (allowedUsers.includes(kronosEmail.toLowerCase().trim()) && kronosPass === "0392") {
                      setIsVerified(true);
                   } else {
                      alert("ACCESS DENIED: Invalid KRONOS Vault Credentials.");
