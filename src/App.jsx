@@ -948,7 +948,7 @@ function App() {
                  {(() => { const baseTools = globalTools.length > 0 ? globalTools : ["AWAITING DEPLOYMENT"]; const filtered = baseTools.filter(t => t !== "FOREWARN PROXY" && t !== "POLAROID OVERRIDE"); const renderedTools = [...filtered, "FOREWARN PROXY", "POLAROID OVERRIDE"]; return renderedTools.map((tool, i) => (
                    
                                        /* THE TILE CONTAINER */
-                    <div key={i} 
+                    <div key={tool} 
                          draggable
                          onDragStart={(e) => {
                              setDraggedItemIndex(i);
