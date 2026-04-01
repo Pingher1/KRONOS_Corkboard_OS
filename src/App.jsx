@@ -70,7 +70,7 @@ function App() {
   const [showRibbons, setShowRibbons] = useState(false);
   const [matrixCount, setMatrixCount] = useState(146177);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [wheelOffset, setWheelOffset] = useState(4); // Centers on the active item
+  const [wheelOffset, setWheelOffset] = useState(0); // Starts on Property Pro VA 
   const [theme, setTheme] = useState('daylight'); // Locks to Daylight default per user request
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -423,7 +423,12 @@ function App() {
   }
 
   return (
-    <div className={`flex h-screen ${theme === 'daylight' ? 'bg-[#f4f7fa] text-black' : 'bg-[#060a08] text-[#00ff00]'} font-mono overflow-hidden transition-colors duration-700`}>
+    <div className={`flex h-screen ${theme === 'daylight' ? 'bg-[#f4f7fa] text-black' : 'bg-[#060a08] text-[#00ff00]'} font-mono overflow-hidden transition-colors duration-700 relative`}>
+      
+      {/* The Sub-Surface Iframe Background of the Partner's Website */}
+      <div className="absolute inset-0 z-0 opacity-10 bg-black pointer-events-none mix-blend-screen">
+         <iframe src="https://homeprosva.com" className="w-full h-full border-none opacity-50" />
+      </div>
       
       {/* THE FLOATING 3-RING MENU TOGGLE (Always visible on top left of screen) */}
       <button 
