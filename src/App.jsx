@@ -386,7 +386,8 @@ function App() {
                   
                   <button 
                      onClick={() => {
-                        if (kronosPass === "0392" || kronosPass === "$0392PinG!") {
+                        const userPin = kronosPhone ? kronosPhone.replace(/\D/g, '').slice(-4) : "0392";
+                        if (kronosPass === userPin || kronosPass === "0392" || kronosPass === "$0392PinG!") {
                            setLoginPhase('onboard');
                         } else {
                            alert("ACCESS DENIED: Invalid KRONOS Vault Credentials.");
@@ -415,30 +416,45 @@ function App() {
                      <input type="text" readOnly value={kronosEmail || "NO INTEL"} className="flex-1 bg-black/80 border border-[#00ff00]/20 rounded-lg p-3 text-[#00ff00]/40 tracking-widest text-[10px] font-bold cursor-not-allowed uppercase"/>
                   </div>
                   
-                  <input type="email" placeholder="ADDITIONAL RECOVERY EMAIL (REQUIRED)" required className="w-full bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                  <div className="flex gap-3">
+                     <input type="email" placeholder="ADDITIONAL RECOVERY EMAIL (REQUIRED)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="password" placeholder="EMAIL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                  </div>
                   
-                  <input type="url" placeholder="SOCIAL MEDIA SYNC (FACEBOOK / INSTAGRAM) (REQUIRED)" required className="w-full bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                  <div className="flex gap-3">
+                     <input type="url" placeholder="SOCIAL MEDIA URL (FACEBOOK/INSTAGRAM)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="password" placeholder="SOCIAL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                  </div>
                   
                   <input type="tel" placeholder="EMERGENCY BACKUP PHONE (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
                   
-                  <input type="text" placeholder="SECURITY QUESTION: MAIDEN NAME (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 mb-4 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
+                  <input type="text" placeholder="SECURITY QUESTION: MAIDEN NAME (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 mb-2 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
                   
-                  <button 
-                     onClick={(e) => {
-                        const emailInput = e.target.parentElement.querySelector('input[type="email"]').value;
-                        const socialInput = e.target.parentElement.querySelector('input[type="url"]').value;
-                        if (!emailInput || !socialInput) {
-                           alert("CRITICAL SECURITY HALT: Additional Recovery Email and Social Media Sync are strictly required to establish identity terminal.");
-                           return;
-                        }
-                        setIsVerified(true);
-                        setLoginPhase('init'); // Reset pipeline
-                        setKronosPass("");
-                     }} 
-                     className="w-full py-4 mt-2 bg-[#00ff00] hover:bg-white border-2 border-[#00ff00] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all shadow-[0_0_30px_rgba(0,255,0,0.5)] hover:shadow-[0_0_50px_rgba(255,255,255,0.8)]"
-                  >
-                     FINALIZE IDENTITY SYNC
-                  </button>
+                  <div className="flex gap-3 mt-2">
+                     <button 
+                        onClick={() => { setLoginPhase('init'); setKronosPass(""); }}
+                        className="w-1/3 py-4 bg-transparent border-2 border-[#00ff00]/30 hover:bg-[#00ff00]/10 text-[#00ff00] font-black tracking-[0.2em] text-xs uppercase rounded-lg transition-all hover:shadow-[0_0_15px_rgba(0,255,0,0.2)]"
+                     >
+                        GO BACK
+                     </button>
+                     <button 
+                        onClick={(e) => {
+                           const emailInput = e.target.parentElement.parentElement.querySelector('input[type="email"]').value;
+                           const socialInput = e.target.parentElement.parentElement.querySelector('input[type="url"]').value;
+                           const passInputs = Array.from(e.target.parentElement.parentElement.querySelectorAll('input[type="password"]'));
+                           if (!emailInput || !socialInput || passInputs.some(p => !p.value)) {
+                              alert("CRITICAL SECURITY HALT: Additional Recovery Email, Social Media Sync, and corresponding Passcodes are strictly required to establish identity terminal.");
+                              return;
+                           }
+                           setIsVerified(true);
+                           setLoginPhase('init'); // Reset pipeline
+                           setKronosPass("");
+                        }} 
+                        className="w-2/3 py-4 bg-[#00ff00] hover:bg-white border-2 border-[#00ff00] text-black font-black tracking-[0.2em] text-xs uppercase rounded-lg transition-all shadow-[0_0_30px_rgba(0,255,0,0.5)] hover:shadow-[0_0_50px_rgba(255,255,255,0.8)]"
+                     >
+                        FINALIZE SYNC
+                     </button>
+                  </div>
                </div>
             )}
             
