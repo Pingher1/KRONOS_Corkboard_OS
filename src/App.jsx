@@ -586,7 +586,7 @@ function App() {
                {globalLang === 'en' ? 'OPERATOR CONSOLE' : 'آپریٹر کنسول'}
              </p>
              <p className={`text-lg font-black tracking-[0.2em] uppercase mt-1 ${theme === 'daylight' ? 'text-black' : 'text-[#00ff00] drop-shadow-[0_0_5px_rgba(0,255,0,0.8)]'}`}>
-               ESHA_TL_01
+               {kronosEmail ? `${kronosEmail.split('@')[0].toUpperCase()}_01` : 'ESHA_01'}
              </p>
           </div>
         </div>
@@ -1261,7 +1261,7 @@ function App() {
                         </div>
                      </div>
                      <div className="flex-1 flex flex-col gap-2">
-                        <input type="text" defaultValue="ESHA (TEAM LEAD)" className="w-full bg-transparent border-b border-[#00ff00]/30 pb-1 text-[#00ff00] text-lg font-black tracking-widest focus:outline-none focus:border-[#00ff00] placeholder-[#00ff00]/40"/>
+                        <input type="text" defaultValue={kronosEmail ? `${kronosEmail.split('@')[0].toUpperCase()} (OPERATOR)` : 'OPERATOR'} className="w-full bg-transparent border-b border-[#00ff00]/30 pb-1 text-[#00ff00] text-lg font-black tracking-widest focus:outline-none focus:border-[#00ff00] placeholder-[#00ff00]/40"/>
                         <input type="tel" defaultValue="+1 (555) 019-8372" className="w-full bg-transparent border-b border-[#00ff00]/30 pb-1 text-[#00ff00]/80 text-xs font-bold tracking-widest focus:outline-none focus:border-[#00ff00] placeholder-[#00ff00]/40"/>
                         <p className="text-[10px] text-[#00ff00]/50 mt-1 tracking-widest font-black">CLEARANCE: VANGUARD OPS</p>
                      </div>
