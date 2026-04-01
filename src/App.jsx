@@ -445,13 +445,13 @@ function App() {
                   </div>
                   
                   <div className="flex gap-3">
-                     <input type="email" placeholder="ADDITIONAL RECOVERY EMAIL (REQUIRED)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
-                     <input type="password" placeholder="EMAIL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="email" autoComplete="email" placeholder="ADDITIONAL RECOVERY EMAIL (REQUIRED)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="password" autoComplete="current-password" placeholder="EMAIL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
                   </div>
                   
                   <div className="flex gap-3">
-                     <input type="url" placeholder="SOCIAL MEDIA URL (FACEBOOK/INSTAGRAM)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
-                     <input type="password" placeholder="SOCIAL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="url" autoComplete="username" placeholder="SOCIAL MEDIA URL (FACEBOOK/INSTAGRAM)" required className="flex-[2] bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                     <input type="password" autoComplete="current-password" placeholder="SOCIAL PASSCODE" required className="flex-1 bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
                   </div>
                   
                   <input type="tel" placeholder="EMERGENCY BACKUP PHONE (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
