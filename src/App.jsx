@@ -317,13 +317,14 @@ function App() {
             {loginPhase === 'init' && (
                <>
                   <div className="w-full flex gap-3 mb-6">
-                     <input type="text" placeholder="FIRST NAME" value={kronosFirst} onChange={(e) => setKronosFirst(e.target.value)} className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
-                     <input type="text" placeholder="LAST NAME" value={kronosLast} onChange={(e) => setKronosLast(e.target.value)} className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                     <input type="text" placeholder="FIRST NAME" autoComplete="given-name" value={kronosFirst} onChange={(e) => setKronosFirst(e.target.value)} className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                     <input type="text" placeholder="LAST NAME" autoComplete="family-name" value={kronosLast} onChange={(e) => setKronosLast(e.target.value)} className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
                   </div>
                   
                   <input 
                      type="tel" 
                      placeholder="DIRECT CELL NUMBER" 
+                     autoComplete="tel"
                      value={kronosPhone}
                      onChange={(e) => setKronosPhone(e.target.value)}
                      className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
@@ -331,6 +332,7 @@ function App() {
                   <input 
                      type="email" 
                      placeholder="ENCRYPTED EMAIL ADDRESS" 
+                     autoComplete="email"
                      value={kronosEmail}
                      onChange={(e) => setKronosEmail(e.target.value)}
                      className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-10 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
