@@ -87,6 +87,8 @@ function App() {
   const [kronosEmail, setKronosEmail] = useState("");
   const [kronosPass, setKronosPass] = useState("");
   const [kronosPhone, setKronosPhone] = useState("");
+  const [kronosFirst, setKronosFirst] = useState("");
+  const [kronosLast, setKronosLast] = useState("");
   const [loginPhase, setLoginPhase] = useState("init");
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
   const [showIntegrationsPortal, setShowIntegrationsPortal] = useState(false); // Controls the Persona/Integrations overlay
@@ -305,8 +307,8 @@ function App() {
             {loginPhase === 'init' && (
                <>
                   <div className="w-full flex gap-3 mb-6">
-                     <input type="text" placeholder="FIRST NAME" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
-                     <input type="text" placeholder="LAST NAME" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                     <input type="text" placeholder="FIRST NAME" value={kronosFirst} onChange={(e) => setKronosFirst(e.target.value)} className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                     <input type="text" placeholder="LAST NAME" value={kronosLast} onChange={(e) => setKronosLast(e.target.value)} className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
                   </div>
                   
                   <input 
@@ -385,9 +387,7 @@ function App() {
                   <button 
                      onClick={() => {
                         if (kronosPass === "0392" || kronosPass === "$0392PinG!") {
-                           setIsVerified(true);
-                           setLoginPhase('init'); // Reset for future lockouts
-                           setKronosPass("");
+                           setLoginPhase('onboard');
                         } else {
                            alert("ACCESS DENIED: Invalid KRONOS Vault Credentials.");
                         }
@@ -397,6 +397,49 @@ function App() {
                      AUTHORIZE ACCESS
                   </button>
                </>
+            )}
+
+            {loginPhase === 'onboard' && (
+               <div className="w-full flex flex-col gap-4 animate-fadeIn">
+                  <div className="w-full bg-[#00ff00]/10 border border-[#00ff00]/40 rounded-lg p-4 mb-2 text-center shadow-[inset_0_0_15px_rgba(0,255,0,0.2)]">
+                     <p className="text-[#00ff00] font-bold tracking-widest text-[10px] uppercase">CREDENTIALS VERIFIED. COMPLETE IDENTITY SYNC PROTOCOL.</p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                     <input type="text" readOnly value={kronosFirst || "OPERATOR"} className="flex-1 bg-black/80 border border-[#00ff00]/20 rounded-lg p-3 text-[#00ff00]/40 tracking-widest text-[10px] font-bold cursor-not-allowed uppercase"/>
+                     <input type="text" readOnly value={kronosLast || "UNASSIGNED"} className="flex-1 bg-black/80 border border-[#00ff00]/20 rounded-lg p-3 text-[#00ff00]/40 tracking-widest text-[10px] font-bold cursor-not-allowed uppercase"/>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                     <input type="text" readOnly value={kronosPhone || "NO INTEL"} className="flex-1 bg-black/80 border border-[#00ff00]/20 rounded-lg p-3 text-[#00ff00]/40 tracking-widest text-[10px] font-bold cursor-not-allowed uppercase"/>
+                     <input type="text" readOnly value={kronosEmail || "NO INTEL"} className="flex-1 bg-black/80 border border-[#00ff00]/20 rounded-lg p-3 text-[#00ff00]/40 tracking-widest text-[10px] font-bold cursor-not-allowed uppercase"/>
+                  </div>
+                  
+                  <input type="email" placeholder="ADDITIONAL RECOVERY EMAIL (REQUIRED)" required className="w-full bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                  
+                  <input type="url" placeholder="SOCIAL MEDIA SYNC (FACEBOOK / INSTAGRAM) (REQUIRED)" required className="w-full bg-black/50 border border-[#00ff00]/50 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/60 transition-all"/>
+                  
+                  <input type="tel" placeholder="EMERGENCY BACKUP PHONE (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
+                  
+                  <input type="text" placeholder="SECURITY QUESTION: MAIDEN NAME (OPTIONAL)" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-3 mb-4 text-[#00ff00] tracking-widest text-[10px] font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/30 transition-all"/>
+                  
+                  <button 
+                     onClick={(e) => {
+                        const emailInput = e.target.parentElement.querySelector('input[type="email"]').value;
+                        const socialInput = e.target.parentElement.querySelector('input[type="url"]').value;
+                        if (!emailInput || !socialInput) {
+                           alert("CRITICAL SECURITY HALT: Additional Recovery Email and Social Media Sync are strictly required to establish identity terminal.");
+                           return;
+                        }
+                        setIsVerified(true);
+                        setLoginPhase('init'); // Reset pipeline
+                        setKronosPass("");
+                     }} 
+                     className="w-full py-4 mt-2 bg-[#00ff00] hover:bg-white border-2 border-[#00ff00] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all shadow-[0_0_30px_rgba(0,255,0,0.5)] hover:shadow-[0_0_50px_rgba(255,255,255,0.8)]"
+                  >
+                     FINALIZE IDENTITY SYNC
+                  </button>
+               </div>
             )}
             
             <p className="text-[#00ff00]/40 text-[9px] tracking-[0.1em] text-center w-full mt-4 border-t border-[#00ff00]/10 pt-4 px-8 leading-relaxed">
