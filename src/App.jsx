@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TRT_Veil from './TRT_Veil';
 import VA_Portal from './VA_Portal';
+import ForewarnProxy from './ForewarnProxy';
 
 const MENU_ITEMS = [
   "PROPERTY PRO VA",
@@ -14,6 +15,7 @@ const MENU_ITEMS = [
   "REALTOR.COM",
   "GMAIL PORTAL",
   "USER PROFILE",
+  "FOREWARN PROXY",
   "TRANSLATE O.S.",
   "CYCLE THEME",
   "CHANGE GRID",
@@ -81,8 +83,10 @@ function App() {
   const [polaroidArchive, setPolaroidArchive] = useState([]);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showDownloadAlert, setShowDownloadAlert] = useState(false);
+  const [showForewarnProxy, setShowForewarnProxy] = useState(false);
   const [kronosEmail, setKronosEmail] = useState("");
   const [kronosPass, setKronosPass] = useState("");
+  const [loginPhase, setLoginPhase] = useState("init");
   const [showUpdateModal, setShowUpdateModal] = useState(false); // STRIPPED: Master Onboarding Lock State is OFF for Kasham Demo
   const [showIntegrationsPortal, setShowIntegrationsPortal] = useState(false); // Controls the Persona/Integrations overlay
 
@@ -297,46 +301,86 @@ function App() {
             <h1 className="text-4xl tracking-[0.4em] font-black text-[#00ff00] drop-shadow-[0_0_15px_rgba(0,255,0,0.8)] mb-2 mt-4 text-center">KRONOS</h1>
             <p className="text-[#00ff00]/50 tracking-[0.3em] pl-2 text-xs mb-12 text-center font-bold">MILITARY 2FA SECURITY GATE</p>
             
-            <div className="w-full flex gap-3 mb-6">
-               <input type="text" placeholder="FIRST NAME" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
-               <input type="text" placeholder="LAST NAME" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
-            </div>
-            
-            <input type="tel" placeholder="DIRECT CELL NUMBER" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
-            <input 
-               type="email" 
-               placeholder="ENCRYPTED EMAIL ADDRESS" 
-               value={kronosEmail}
-               onChange={(e) => setKronosEmail(e.target.value)}
-               className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
-            />
-            <input 
-               type="password" 
-               placeholder="SECURITY VAULT PASSWORD" 
-               value={kronosPass}
-               onChange={(e) => setKronosPass(e.target.value)}
-               className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-10 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
-            />
-            
-            <button 
-               onClick={() => {
-                  const allowedUsers = [
-                     "esha@therichardsonteam.com",
-                     "phillip@therichardsonteam.com",
-                     "katelynn@therichardsonteam.com",
-                     "kurt@therichardsonteam.com"
-                  ];
+            {loginPhase === 'init' && (
+               <>
+                  <div className="w-full flex gap-3 mb-6">
+                     <input type="text" placeholder="FIRST NAME" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                     <input type="text" placeholder="LAST NAME" className="flex-1 bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                  </div>
                   
-                  if (allowedUsers.includes(kronosEmail.toLowerCase().trim()) && kronosPass === "0392") {
-                     setIsVerified(true);
-                  } else {
-                     alert("ACCESS DENIED: Invalid KRONOS Vault Credentials.");
-                  }
-               }} 
-               className="w-full py-4 mb-4 bg-[#00ff00] hover:bg-white border-2 border-[#00ff00] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all shadow-[0_0_30px_rgba(0,255,0,0.5)] hover:shadow-[0_0_50px_rgba(255,255,255,0.8)]"
-            >
-               AUTHORIZE ACCESS
-            </button>
+                  <input type="tel" placeholder="DIRECT CELL NUMBER" className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-6 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"/>
+                  <input 
+                     type="email" 
+                     placeholder="ENCRYPTED EMAIL ADDRESS" 
+                     value={kronosEmail}
+                     onChange={(e) => setKronosEmail(e.target.value)}
+                     className="w-full bg-black/50 border border-[#00ff00]/30 rounded-lg p-4 mb-10 text-[#00ff00] tracking-widest text-xs font-bold focus:outline-none focus:border-[#00ff00] focus:bg-[#00ff00]/5 placeholder-[#00ff00]/20 transition-all shadow-inner"
+                  />
+                  
+                  <button 
+                     onClick={() => {
+                        const allowedUsers = [
+                           "esha@therichardsonteam.com",
+                           "esha@therichardsonteamtx.com",
+                           "phillip@therichardsonteam.com",
+                           "phillip@therichardsonteamtx.com",
+                           "katelynn@therichardsonteam.com",
+                           "katelynn@therichardsonteamtx.com",
+                           "kurt@therichardsonteam.com",
+                           "kurt@therichardsonteamtx.com"
+                        ];
+                        
+                        if (allowedUsers.includes(kronosEmail.toLowerCase().trim())) {
+                           setLoginPhase('dispatch');
+                           setTimeout(() => setLoginPhase('pin'), 3500);
+                        } else {
+                           alert("ACCESS DENIED: Email not authorized for KRONOS.");
+                        }
+                     }} 
+                     className="w-full py-4 mb-4 bg-[#00ff00] hover:bg-white shadow-[0_0_30px_rgba(0,255,0,0.5)] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all"
+                  >
+                     ESTABLISH SECURE CONNECTION
+                  </button>
+               </>
+            )}
+
+            {loginPhase === 'dispatch' && (
+               <div className="flex flex-col items-center justify-center py-12">
+                  <div className="w-16 h-16 border-4 border-[#00ff00] border-t-transparent rounded-full animate-spin mb-6 drop-shadow-[0_0_15px_rgba(0,255,0,0.8)]"></div>
+                  <p className="text-[#00ff00] font-bold tracking-widest text-center animate-pulse">UNRECOGNIZED TERMINAL DETECTED...</p>
+                  <p className="text-[#00ff00]/50 text-[10px] tracking-[0.3em] font-mono mt-4 text-center">REROUTING HANDSHAKE PING...<br/>DISPATCHING 2FA SMS TO DEVICE...</p>
+               </div>
+            )}
+
+            {loginPhase === 'pin' && (
+               <>
+                  <div className="w-full bg-[#00ff00]/10 border border-[#00ff00]/40 rounded-lg p-4 mb-8 text-center animate-pulse shadow-[inset_0_0_15px_rgba(0,255,0,0.2)]">
+                     <p className="text-[#00ff00] font-bold tracking-widest text-xs">A 4-DIGIT PIN WAS DELIVERED VIA SMS</p>
+                  </div>
+                  <input 
+                     type="password" 
+                     placeholder="****" 
+                     value={kronosPass}
+                     onChange={(e) => setKronosPass(e.target.value)}
+                     className="w-full bg-black/50 border border-[#00ff00] rounded-lg p-4 mb-10 text-[#00ff00] tracking-[1em] text-center text-2xl font-black focus:outline-none focus:shadow-[0_0_20px_rgba(0,255,0,0.3)] transition-all shadow-inner"
+                  />
+                  
+                  <button 
+                     onClick={() => {
+                        if (kronosPass === "0392" || kronosPass === "$0392PinG!") {
+                           setIsVerified(true);
+                           setLoginPhase('init'); // Reset for future lockouts
+                           setKronosPass("");
+                        } else {
+                           alert("ACCESS DENIED: Invalid KRONOS Vault Credentials.");
+                        }
+                     }} 
+                     className="w-full py-4 mb-4 bg-[#00ff00] hover:bg-white border-2 border-[#00ff00] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all shadow-[0_0_30px_rgba(0,255,0,0.5)] hover:shadow-[0_0_50px_rgba(255,255,255,0.8)]"
+                  >
+                     AUTHORIZE ACCESS
+                  </button>
+               </>
+            )}
             
             <p className="text-[#00ff00]/40 text-[9px] tracking-[0.1em] text-center w-full mt-4 border-t border-[#00ff00]/10 pt-4 px-8 leading-relaxed">
                I acknowledge that this system is heavily monitored. Unauthorized entry attempts will result in an immediate MAC address lockout.
@@ -767,7 +811,7 @@ function App() {
                
                {/* SCREEN 1: PRIMARY GRID */}
                <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[70vh] items-center snap-center snap-always">
-                 {(globalTools.length > 0 ? globalTools : ["AWAITING DEPLOYMENT"]).map((tool, i) => (
+                 {(() => { const baseTools = globalTools.length > 0 ? globalTools : ["AWAITING DEPLOYMENT"]; const filtered = baseTools.filter(t => t !== "FOREWARN PROXY" && t !== "POLAROID OVERRIDE"); const renderedTools = [...filtered, "FOREWARN PROXY", "POLAROID OVERRIDE"]; return renderedTools.map((tool, i) => (
                    
                                        /* THE TILE CONTAINER */
                     <div key={i} 
@@ -793,7 +837,7 @@ function App() {
                              setDraggedItemIndex(null);
                          }}
                          className={`relative group p-[2px] transition-all duration-[800ms] cursor-pointer ${expandedTiles[tool] ? 'col-span-1 md:col-span-2 lg:col-span-3 aspect-[21/9] z-[100]' : 'hover:scale-[1.03] aspect-[5/4]'}`}
-                         onClick={() => {
+                         onClick={() => { if (tool === 'FOREWARN PROXY') { setShowForewarnProxy(true); return; } if (tool === 'POLAROID OVERRIDE') { document.getElementById('kronos-polaroid-btn')?.click(); return; }
                            const urls = {
                              "PROPERTY PRO VA": "https://homeprosva.com",
                              "FOLLOW UP BOSS": "https://www.followupboss.com",
@@ -856,7 +900,8 @@ function App() {
                             </div>
                         </div>
                     </div>
-                 ))}
+                 ));
+                 })()}
                </div>
 
                {/* SCREEN BREAK DIVIDER */}
@@ -1137,6 +1182,10 @@ function App() {
           </div>
         </button>
       </div>
+
+      {showForewarnProxy && (
+         <ForewarnProxy onClose={() => setShowForewarnProxy(false)} />
+      )}
 
       {showArchiveModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-8 pointer-events-auto bg-black/80 backdrop-blur-xl">
