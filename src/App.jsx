@@ -807,13 +807,22 @@ function App() {
                             
                             {/* Inner Card Content Base */}
                             <div className={`absolute inset-[2px] backdrop-blur-xl rounded-[22px] border transition-all duration-300 z-10 flex flex-col items-center justify-center p-8 ${theme === 'daylight' ? 'bg-white/90 border-black/5 group-hover:border-transparent group-hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]' : 'bg-[#020504]/90 border-[#00ff00]/20 group-hover:border-transparent'}`}>
-                               {/* Central Icon */}
-                               <div className="w-20 h-20 rounded-full border border-[#00ff00]/30 flex items-center justify-center mb-6 group-hover:border-[#00ff00] group-hover:bg-[#00ff00]/10 transition-all duration-500 shadow-[inset_0_0_15px_rgba(0,255,0,0.1)]">
-                                  <span className="text-[#00ff00] text-3xl drop-shadow-[0_0_10px_rgba(0,255,0,0.8)] opacity-60 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500">⚡</span>
-                               </div>
-                               
-                               <h3 className="text-white text-md sm:text-lg tracking-widest text-center font-bold mb-3 drop-shadow-md">{tool}</h3>
-                               <p className="text-[#00ff00]/60 text-[9px] sm:text-[10px] tracking-[0.2em] text-center border-t border-[#00ff00]/20 pt-3 px-4 w-full">SYSTEM ACCESS GRANTED</p>
+                               {tool.startsWith('POLAROID_') ? (
+                                 <div className="w-full h-full relative flex items-center justify-center">
+                                    <img src={tool.replace('POLAROID_', '')} className="w-full h-full object-cover rounded-xl" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all pointer-events-none"></div>
+                                 </div>
+                               ) : (
+                                 <>
+                                   {/* Central Icon */}
+                                   <div className="w-20 h-20 rounded-full border border-[#00ff00]/30 flex items-center justify-center mb-6 group-hover:border-[#00ff00] group-hover:bg-[#00ff00]/10 transition-all duration-500 shadow-[inset_0_0_15px_rgba(0,255,0,0.1)]">
+                                      <span className="text-[#00ff00] text-3xl drop-shadow-[0_0_10px_rgba(0,255,0,0.8)] opacity-60 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500">⚡</span>
+                                   </div>
+                                   
+                                   <h3 className="text-white text-md sm:text-lg tracking-widest text-center font-bold mb-3 drop-shadow-md">{tool}</h3>
+                                   <p className="text-[#00ff00]/60 text-[9px] sm:text-[10px] tracking-[0.2em] text-center border-t border-[#00ff00]/20 pt-3 px-4 w-full">SYSTEM ACCESS GRANTED</p>
+                                 </>
+                               )}
                             </div>
                         </div>
                     </div>
@@ -1042,7 +1051,10 @@ function App() {
                setTimeout(() => {
                  img.style.opacity = "0";
                  img.style.transform = "translateY(100px) rotate(-10deg) scale(0.8)";
-                 setTimeout(() => document.body.removeChild(img), 1000);
+                 setTimeout(() => {
+                    document.body.removeChild(img);
+                    setGlobalTools(prev => [...prev, "POLAROID_" + dataUrl]);
+                 }, 1000);
                }, 4000);
 
              } catch (err) {
