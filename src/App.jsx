@@ -331,8 +331,10 @@ function App() {
                         const allowedUsers = [
                            "esha@therichardsonteam.com",
                            "esha@therichardsonteamtx.com",
+                           "esha@homeprosva.com",
                            "phillip@therichardsonteam.com",
                            "phillip@therichardsonteamtx.com",
+                           "phillip@homeprosva.com",
                            "katelynn@therichardsonteam.com",
                            "katelynn@therichardsonteamtx.com",
                            "kurt@therichardsonteam.com",
