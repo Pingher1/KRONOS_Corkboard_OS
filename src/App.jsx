@@ -517,11 +517,7 @@ function App() {
   return (
     <div className={`flex h-screen ${theme === 'daylight' ? 'bg-[#f4f7fa] text-black' : 'bg-[#060a08] text-[#00ff00]'} font-mono overflow-hidden transition-colors duration-700 relative`}>
       
-      {/* The Sub-Surface Iframe Background of the Partner's Website */}
-      <div className="absolute inset-0 z-0 bg-black pointer-events-none mix-blend-plus-lighter">
-         <iframe src="https://homeprosva.com" className="w-full h-full border-none invert grayscale opacity-10" />
-      </div>
-      
+      {/* Dynamic Backgrounds are handled exclusively via the Theme backgroundImage property below */}      
       {/* THE FLOATING 3-RING MENU TOGGLE (Always visible on top left of screen) */}
       <button 
         onClick={() => setIsRetracted(!isRetracted)}
