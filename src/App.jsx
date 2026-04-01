@@ -334,7 +334,7 @@ function App() {
                            setLoginPhase('dispatch');
                            setTimeout(() => setLoginPhase('pin'), 3500);
                         } else {
-                           alert("ACCESS DENIED: Email not authorized for KRONOS.");
+                           alert("ACCESS DENIED: Email not found in Active Roster.\n\nERROR 403: UNRECOGNIZED TERMINAL.\nIf you are an authorized contractor, please text KRONOS Administration immediately at (832) 867-2223 to request a Whitelist update for your current email.");
                         }
                      }} 
                      className="w-full py-4 mb-4 bg-[#00ff00] hover:bg-white shadow-[0_0_30px_rgba(0,255,0,0.5)] text-black font-black tracking-[0.4em] text-sm uppercase rounded-lg transition-all"
