@@ -65,7 +65,18 @@ function App() {
   const [hasLockedOnce, setHasLockedOnce] = useState(false);
   const [gridLayout, setGridLayout] = useState('LIVE GRAB');
   const [showUserProfile, setShowUserProfile] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(() => {
+    // Auto-login: If VA has already completed full onboarding, skip login flow
+    const f = localStorage.getItem('kronosFirst');
+    const l = localStorage.getItem('kronosLast');
+    const p = localStorage.getItem('kronosPhone');
+    const e = localStorage.getItem('kronosEmail');
+    const re = localStorage.getItem('recoveryEmail');
+    const rp = localStorage.getItem('recoveryPass');
+    const su = localStorage.getItem('socialUrl');
+    const sp = localStorage.getItem('socialPass');
+    return !!(f && l && (p || e) && re && rp && su && sp);
+  });
   const [showAppStore, setShowAppStore] = useState(false);
   const [showRibbons, setShowRibbons] = useState(false);
   const [matrixCount, setMatrixCount] = useState(146177);
