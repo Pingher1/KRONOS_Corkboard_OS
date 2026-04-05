@@ -371,12 +371,15 @@ function App() {
                         const allowedUsers = [
                            "phillip@therichardsonteam.com",
                            "phillip@therichardsonteamtx.com",
+                           "trt@therichardsonteamtx.com",
                            "therichardsonteamtx@gmail.com",
+                           "pjlrichardson@gmail.com",
                            "phillip@homeprosva.com",
                            "katelyn@therichardsonteamtx.com",
                            "katelynn@therichardsonteam.com", // Keeping typo as fallback
                            "kurt.peterson52@gmail.com",
                            "kurt@therichardsonteam.com",
+                           "kurt@therichardsonteamtx.com",
                            "esha@homeprosva.com",
                            "esha@therichardsonteam.com",
                            "hamza@homeprosva.com",
@@ -390,22 +393,61 @@ function App() {
                            "jhp.hudson@gmail.com"
                         ];
                         
+                        // Core 10-digit phone roster (NO country codes - we normalize below)
                         const allowedPhones = [
                            "8328672223", // Phillip / Esha Shared
                            "3612902460", // Katelyn
                            "2075952493", // Kurt
                            "8326741203", // Hamza
                            "3464521666", // Doug
-                           "8172474766", // John
-                           "5550198372"  // Placeholder Admin
+                           "8172474766"  // John
                         ];
                         
-                        const parsedPhone = kronosPhone.replace(/\D/g, ""); // Strip formatted characters
+                        // ── SMART PHONE NORMALIZER ──
+                        // Handles: +1, 1, 01, 001, 0092 (Pakistan), +92, spaces, dashes, parens
+                        let parsedPhone = kronosPhone.replace(/\D/g, "");
+                        // Strip leading country codes to get 10-digit US number
+                        if (parsedPhone.length === 11 && parsedPhone.startsWith("1")) {
+                          parsedPhone = parsedPhone.slice(1); // +1 or 1-xxx
+                        } else if (parsedPhone.length === 12 && parsedPhone.startsWith("01")) {
+                          parsedPhone = parsedPhone.slice(2); // 01-xxx (international dial)
+                        } else if (parsedPhone.length === 13 && parsedPhone.startsWith("001")) {
+                          parsedPhone = parsedPhone.slice(3); // 001-xxx (formal international)
+                        } else if (parsedPhone.length >= 12 && parsedPhone.startsWith("92")) {
+                          parsedPhone = parsedPhone.slice(2); // Pakistan +92 prefix
+                        } else if (parsedPhone.length >= 14 && parsedPhone.startsWith("0092")) {
+                          parsedPhone = parsedPhone.slice(4); // Pakistan 0092 prefix
+                        }
                         
-                        if (
-                           (kronosEmail && allowedUsers.includes(kronosEmail.toLowerCase().trim())) ||
-                           (parsedPhone && allowedPhones.includes(parsedPhone))
-                        ) {
+                        // ── SMART EMAIL MATCHER ──
+                        // Exact match first, then fuzzy (handles 1-2 char typos)
+                        const inputEmail = kronosEmail.toLowerCase().trim();
+                        const exactEmailMatch = allowedUsers.includes(inputEmail);
+                        
+                        let fuzzyEmailMatch = false;
+                        if (!exactEmailMatch && inputEmail.length > 5) {
+                          // Levenshtein distance helper (max 2 edits = typo tolerance)
+                          const levenshtein = (a, b) => {
+                            const m = a.length, n = b.length;
+                            const dp = Array.from({length: m+1}, (_,i) => Array(n+1).fill(0));
+                            for (let i = 0; i <= m; i++) dp[i][0] = i;
+                            for (let j = 0; j <= n; j++) dp[0][j] = j;
+                            for (let i = 1; i <= m; i++)
+                              for (let j = 1; j <= n; j++)
+                                dp[i][j] = Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+(a[i-1]!==b[j-1]?1:0));
+                            return dp[m][n];
+                          };
+                          const closeMatch = allowedUsers.find(u => levenshtein(inputEmail, u) <= 2);
+                          if (closeMatch) {
+                            fuzzyEmailMatch = true;
+                            // Auto-correct the email silently
+                            setKronosEmail(closeMatch);
+                          }
+                        }
+                        
+                        const phoneMatch = parsedPhone.length === 10 && allowedPhones.includes(parsedPhone);
+                        
+                        if (exactEmailMatch || fuzzyEmailMatch || phoneMatch) {
                            setLoginPhase('dispatch');
                            setTimeout(() => setLoginPhase('pin'), 3500);
                         } else {
