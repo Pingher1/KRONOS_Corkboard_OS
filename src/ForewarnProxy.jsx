@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 // → server logs into ForewArn, navigates to results → pops up ForewArn
 // VA sees ForewArn directly. We just get them past the login.
 
-const API = import.meta.env.VITE_FOREWARN_API || 'http://localhost:3003';
+const API = import.meta.env.VITE_FOREWARN_API || 'https://forewarn.therichardsonteamtx.com';
 
 export default function ForewarnProxy({ onClose }) {
   // ── State ──
