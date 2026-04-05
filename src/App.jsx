@@ -569,8 +569,8 @@ function App() {
                      </button>
                      <button 
                         onClick={(e) => {
-                           if (!recoveryEmail || !socialUrl || !recoveryPass || !socialPass) {
-                              alert("CRITICAL SECURITY HALT: Additional Recovery Email, Social Media Sync, and corresponding Passcodes are strictly required to establish identity terminal.");
+                           if (!recoveryEmail) {
+                              alert("Recovery email is required to complete setup.");
                               return;
                            }
                            setIsVerified(true);
