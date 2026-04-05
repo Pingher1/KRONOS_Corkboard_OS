@@ -1056,7 +1056,7 @@ function App() {
                              "GOOGLE PORTAL": "https://www.google.com",
                              "GMAIL PORTAL": "https://mail.google.com",
                              "ListReports NPR": "https://www.listreports.com/",
-                             "DocuSign": "https://www.docusign.com"
+                             "DocuSign": "https://www.docusign.com", "FOREWARN APP": "https://app.forewarn.com"
                            };
                            // Removed Vault Interception
                            if(urls[tool]) {
