@@ -575,6 +575,10 @@ function App() {
                               alert("Recovery email is required to complete setup.");
                               return;
                            }
+                           // Track email verification status
+                           localStorage.setItem('emailSyncVerified', 'false');
+                           localStorage.setItem('emailSyncDate', new Date().toISOString());
+                           localStorage.setItem('emailSyncTarget', recoveryEmail);
                            setIsVerified(true);
                            setLoginPhase('init'); // Reset pipeline
                            setKronosPass("");
@@ -796,6 +800,42 @@ function App() {
              </p>
           </div>
         </div>
+
+        {/* ── EMAIL SYNC VERIFICATION BANNER ── */}
+        {(() => {
+          const syncVerified = localStorage.getItem('emailSyncVerified');
+          const syncDate = localStorage.getItem('emailSyncDate');
+          const syncTarget = localStorage.getItem('emailSyncTarget');
+          const dismissed = localStorage.getItem('emailSyncDismissed');
+          if (syncVerified === 'false' && syncTarget && !dismissed) {
+            const daysSince = syncDate ? Math.floor((Date.now() - new Date(syncDate).getTime()) / (1000 * 60 * 60 * 24)) : 0;
+            const isUrgent = daysSince >= 5;
+            return (
+              <div className={`fixed left-1/2 -translate-x-1/2 z-[9998] flex items-center gap-3 px-5 py-2 rounded-full backdrop-blur-xl border shadow-lg transition-all duration-500 ${isRetracted ? 'top-4' : 'top-[90px]'} ${
+                isUrgent 
+                  ? 'bg-red-900/80 border-red-500/50 shadow-red-500/20' 
+                  : 'bg-amber-900/60 border-amber-500/30 shadow-amber-500/10'
+              }`}>
+                <span className="text-sm">{isUrgent ? '🔴' : '⚠️'}</span>
+                <span className={`text-[10px] font-bold tracking-wider font-mono ${isUrgent ? 'text-red-300' : 'text-amber-300'}`}>
+                  {isUrgent 
+                    ? `EMAIL SYNC UNVERIFIED — ${daysSince} DAYS PENDING` 
+                    : `VERIFY YOUR RECOVERY EMAIL: ${syncTarget}`
+                  }
+                </span>
+                <button 
+                  onClick={() => { localStorage.setItem('emailSyncVerified', 'true'); window.location.reload(); }}
+                  className="px-3 py-1 bg-emerald-600/80 text-white text-[9px] font-bold tracking-wider rounded-full hover:bg-emerald-500 transition-colors"
+                >✓ VERIFIED</button>
+                <button 
+                  onClick={() => { localStorage.setItem('emailSyncDismissed', 'true'); window.location.reload(); }}
+                  className="text-white/40 hover:text-white text-xs transition-colors"
+                >✕</button>
+              </div>
+            );
+          }
+          return null;
+        })()}
 
         {/* --- THE FLOATING NORTHSTAR PILL (TOP) --- */}
         <div 
