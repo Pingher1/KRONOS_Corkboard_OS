@@ -379,11 +379,14 @@ function App() {
                            // ── Mera ──
                            "mera@therichardsonteamtx.com",
                            "mera@therichardsonteam.com",
+                           "merarichardson@gmail.com",
+                           "mera.richardson@gmail.com",
                            // ── Katelyn ──
                            "katelyn@therichardsonteamtx.com",
                            "katelyn@therichardsonteam.com",
                            "katelynn@therichardsonteam.com",  // Double-n typo fallback
                            "katelynn@therichardsonteamtx.com",
+                           "katelynannbly@gmail.com",
                            // ── Kurt ──
                            "kurt.peterson52@gmail.com",
                            "kurt@therichardsonteam.com",
