@@ -1,47 +1,37 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 // ─── CONTACT VERIFY MODULE ───────────────────────────────────────
-// Flow: VA enters name+phone → whitelist check → enters search info
-// → server logs into ForewArn, navigates to results → pops up ForewArn
-// VA sees ForewArn directly. We just get them past the login.
+// Flow:
+//   1. VA clicks tile → server auto-logs into ForewArn behind the scenes
+//   2. "WAITING FOR CODE" screen appears → PJ gets SMS, tells VA the code
+//   3. VA enters code → MFA completes → search fields appear
+//   4. VA enters phone/name/address → runs search → results
 
 const API = import.meta.env.VITE_FOREWARN_API || 'https://forewarn.therichardsonteamtx.com';
 
 export default function ForewarnProxy({ onClose }) {
   // ── State ──
-  const [step, setStep] = useState('auth');          // auth | search | loading | popup | error
+  // Steps: connecting → waiting_code → search → searching → results → error
+  const [step, setStep] = useState('connecting');
   const [serverOnline, setServerOnline] = useState(null);
-  const [isApproved, setIsApproved] = useState(false);
 
-  // VA auth (from KRONOS login)
-  const [vaName, setVaName] = useState(
-    () => `${localStorage.getItem('kronosFirst') || ''} ${localStorage.getItem('kronosLast') || ''}`.trim() || ''
+  // VA info (from KRONOS login)
+  const [vaName] = useState(
+    () => `${localStorage.getItem('kronosFirst') || ''} ${localStorage.getItem('kronosLast') || ''}`.trim() || 'Operator'
   );
-  const [vaPhone, setVaPhone] = useState(() => localStorage.getItem('kronosPhone') || '');
 
-  // Search fields — ONE box, server routes to correct ForewArn page
+  // Code entry
+  const [verifyCode, setVerifyCode] = useState('');
+
+  // Search fields
   const [clientName, setClientName] = useState('');
   const [clientZip, setClientZip] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientAddress, setClientAddress] = useState('');
 
   // Results
-  const [resultUrl, setResultUrl] = useState('');
   const [resultData, setResultData] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
-
-  // ── Server health ──
-  const checkServer = useCallback(async () => {
-    try {
-      const r = await fetch(`${API}/status`, { signal: AbortSignal.timeout(3000) });
-      if (r.ok) setServerOnline(true);
-      else setServerOnline(false);
-    } catch {
-      setServerOnline(false);
-    }
-  }, []);
-
-  useEffect(() => { checkServer(); }, [checkServer]);
 
   // ── Phone formatter ──
   const fmtPhone = (val) => {
@@ -51,131 +41,129 @@ export default function ForewarnProxy({ onClose }) {
     return d;
   };
 
-  // ── Check VA authorization ──
-  const verifyVA = async () => {
-    if (!vaName.trim() || !vaPhone.trim()) return;
-    
-    try {
-      // Check whitelist by trying a lightweight request
-      const r = await fetch(`${API}/whitelist`);
-      const d = await r.json();
-      const inputName = vaName.trim().toLowerCase();
-      const inputFirst = inputName.split(' ')[0];
-      const match = d.vas?.find(v => {
-        const wl = v.name.toLowerCase();
-        return wl === inputName || wl === inputFirst || inputName.startsWith(wl);
-      });
-      if (match) {
-        setIsApproved(true);
-        setStep('search');
-        localStorage.setItem('fwApproved', 'true');
-      } else {
-        setErrorMsg('Not in system — contact PJ at (832) 867-2223');
+  // ── On mount: immediately start the login process ──
+  useEffect(() => {
+    const startLogin = async () => {
+      try {
+        // Check server health first
+        const health = await fetch(`${API}/status`, { signal: AbortSignal.timeout(4000) });
+        if (!health.ok) {
+          setServerOnline(false);
+          setErrorMsg('ForewArn server is offline');
+          setStep('error');
+          return;
+        }
+        setServerOnline(true);
+
+        // Immediately trigger server login → SMS to PJ
+        const r = await fetch(`${API}/start-check`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            vaName: vaName.trim(),
+            vaPin: '0000',
+            clientPhone: '0000000000' // Placeholder — real search comes after code entry
+          })
+        });
+        const d = await r.json();
+
+        if (r.status === 403) {
+          setErrorMsg('Access denied — contact PJ at (832) 867-2223');
+          setStep('error');
+          return;
+        }
+        if (r.status === 429) {
+          setErrorMsg('System busy — try again in 30 seconds');
+          setStep('error');
+          return;
+        }
+        if (!r.ok) {
+          setErrorMsg(d.error || 'Connection failed');
+          setStep('error');
+          return;
+        }
+
+        // Login initiated, SMS should be sending to PJ
+        setStep('waiting_code');
+
+      } catch (err) {
+        setServerOnline(false);
+        setErrorMsg('Cannot reach ForewArn server');
         setStep('error');
       }
-    } catch {
-      setErrorMsg('Server offline — try again later');
+    };
+
+    startLogin();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Submit the verification code ──
+  const submitCode = async () => {
+    if (!verifyCode.trim()) return;
+    setStep('verifying');
+
+    try {
+      const r = await fetch(`${API}/submit-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: verifyCode.trim() })
+      });
+      const d = await r.json();
+
+      if (!r.ok) {
+        setErrorMsg(d.error || 'Invalid code');
+        setStep('error');
+        return;
+      }
+
+      // MFA complete — show search fields
+      setStep('search');
+
+    } catch (err) {
+      setErrorMsg('Failed to submit code');
       setStep('error');
     }
   };
-
-  // ── Auto-approve if previously verified ──
-  useEffect(() => {
-    if (localStorage.getItem('fwApproved') === 'true' && vaName && vaPhone) {
-      setIsApproved(true);
-      setStep('search');
-    }
-  }, [vaName, vaPhone]);
 
   // ── Can search? ──
   const canSearch = clientPhone.trim() || (clientName.trim() && (clientZip.trim() || clientAddress.trim()));
 
   // ── Run the search ──
   const runSearch = async () => {
-    setStep('loading');
+    setStep('searching');
     setErrorMsg('');
 
     try {
-      const r = await fetch(`${API}/start-check`, {
+      const r = await fetch(`${API}/run-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           clientName: clientName.trim(),
           clientPhone: clientPhone.replace(/\D/g, ''),
           clientAddress: clientAddress.trim(),
-          clientZip: clientZip.trim(),
-          vaName: vaName.trim(),
-          vaPin: '0000' // VA already verified by name in step 1
+          clientZip: clientZip.trim()
         })
       });
       const d = await r.json();
 
-      if (r.status === 403) {
-        setErrorMsg('Access denied — contact PJ');
-        setStep('error');
-        return;
-      }
-      if (r.status === 429) {
-        setErrorMsg('System busy — try again in a moment');
-        setStep('error');
-        return;
-      }
       if (!r.ok) {
-        setErrorMsg(d.error || 'Something went wrong');
+        setErrorMsg(d.error || 'Search failed');
         setStep('error');
         return;
       }
 
-      // Server is handling login + search
-      if (d.status === 'waiting_for_code') {
-        // MFA in progress - poll for completion
-        pollForResult();
-      } else if (d.status === 'result') {
-        setResultData(d.result);
-        setStep('popup');
-      } else if (d.url) {
-        // Server returned a ForewArn URL — open it
-        setResultUrl(d.url);
-        setStep('popup');
-      }
+      setResultData(d.result || d);
+      setStep('results');
+
     } catch (err) {
-      setErrorMsg('Server not reachable');
+      setErrorMsg('Search failed — server error');
       setStep('error');
     }
   };
 
-  // ── Poll for MFA completion ──
-  const pollForResult = () => {
-    let attempts = 0;
-    const timer = setInterval(async () => {
-      attempts++;
-      if (attempts > 40) { // ~3.5 min
-        clearInterval(timer);
-        setErrorMsg('Timed out waiting for verification');
-        setStep('error');
-        return;
-      }
-      try {
-        const r = await fetch(`${API}/status`);
-        const d = await r.json();
-        if (d.lastResult) {
-          clearInterval(timer);
-          setResultData(d.lastResult);
-          setStep('popup');
-        }
-      } catch {}
-    }, 5000);
-  };
-
-  // ── Clear ──
+  // ── Reset ──
   const resetSearch = () => {
-    setClientName('');
-    setClientZip('');
-    setClientPhone('');
-    setClientAddress('');
-    setResultData(null);
-    setResultUrl('');
-    setErrorMsg('');
+    setClientName(''); setClientZip(''); setClientPhone(''); setClientAddress('');
+    setResultData(null); setErrorMsg('');
     setStep('search');
   };
 
@@ -209,47 +197,72 @@ export default function ForewarnProxy({ onClose }) {
         {/* ── Body ── */}
         <div className="flex-1 overflow-y-auto p-5">
 
-          {/* ══ STEP 1: VA AUTH ══ */}
-          {step === 'auth' && (
+          {/* ══ CONNECTING — auto login in progress ══ */}
+          {step === 'connecting' && (
+            <div className="flex flex-col items-center justify-center py-14 gap-4">
+              <div className="w-12 h-12 border-[3px] border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
+              <p className="text-slate-300 text-sm font-semibold">Connecting to ForewArn...</p>
+              <p className="text-slate-600 text-[11px] text-center">Logging in behind the scenes.<br/>A verification code will be sent to PJ.</p>
+            </div>
+          )}
+
+          {/* ══ WAITING FOR CODE — VA enters the code PJ gives them ══ */}
+          {step === 'waiting_code' && (
             <div className="flex flex-col gap-4">
               <div className="text-center mb-2">
-                <div className="text-[10px] text-slate-500 font-bold tracking-[2px] uppercase">Employee Verification</div>
-                <p className="text-slate-600 text-[11px] mt-1">Enter your name and phone number</p>
+                <div className="text-emerald-400 text-xs font-bold mb-2">✓ Connected as: {vaName}</div>
+                <div className="w-14 h-14 mx-auto bg-blue-600/20 border-2 border-blue-500/50 rounded-full flex items-center justify-center text-2xl mb-3 animate-pulse">
+                  📱
+                </div>
+                <div className="text-white text-base font-bold">WAITING FOR PASSCODE</div>
+                <p className="text-slate-500 text-xs mt-1.5">
+                  A code was sent to PJ's phone.<br/>
+                  Ask PJ for the code, then enter it below.
+                </p>
               </div>
 
               <input
                 type="text"
-                value={vaName}
-                onChange={e => setVaName(e.target.value)}
-                placeholder="Your full name"
-                className="w-full bg-[#1e293b] border border-slate-600/50 rounded-lg px-4 py-3 text-white/90 text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/60"
+                value={verifyCode}
+                onChange={e => setVerifyCode(e.target.value.replace(/\D/g, '').slice(0, 8))}
+                placeholder="Enter passcode"
+                maxLength={8}
+                autoFocus
+                className="w-full bg-[#1e293b] border-2 border-blue-500/40 rounded-xl px-4 py-4 text-white text-center text-2xl font-mono tracking-[0.5em] placeholder-slate-600 placeholder:text-sm placeholder:tracking-normal focus:outline-none focus:border-blue-400 transition-colors"
+                onKeyDown={e => e.key === 'Enter' && verifyCode.trim() && submitCode()}
               />
-              <input
-                type="tel"
-                value={vaPhone}
-                onChange={e => setVaPhone(fmtPhone(e.target.value))}
-                placeholder="Your phone number"
-                className="w-full bg-[#1e293b] border border-slate-600/50 rounded-lg px-4 py-3 text-white/90 text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/60"
-              />
+
               <button
-                onClick={verifyVA}
-                disabled={!vaName.trim() || !vaPhone.trim()}
+                onClick={submitCode}
+                disabled={!verifyCode.trim()}
                 className={`w-full py-3 rounded-xl font-bold text-sm tracking-wider transition-all ${
-                  vaName.trim() && vaPhone.trim()
-                    ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-500 hover:to-emerald-600 shadow-lg cursor-pointer'
+                  verifyCode.trim()
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-500 hover:to-blue-600 shadow-lg cursor-pointer'
                     : 'bg-slate-800 text-slate-500 cursor-not-allowed'
                 }`}
               >
-                VERIFY ME
+                SUBMIT CODE
               </button>
+
+              <p className="text-slate-600 text-[10px] text-center mt-1">
+                Waiting for PJ to respond with the verification code...
+              </p>
             </div>
           )}
 
-          {/* ══ STEP 2: SEARCH ══ */}
+          {/* ══ VERIFYING CODE ══ */}
+          {step === 'verifying' && (
+            <div className="flex flex-col items-center justify-center py-14 gap-3">
+              <div className="w-10 h-10 border-[3px] border-slate-700 border-t-emerald-500 rounded-full animate-spin"></div>
+              <p className="text-slate-400 text-sm font-medium">Verifying code...</p>
+            </div>
+          )}
+
+          {/* ══ SEARCH — code accepted, now enter who to look up ══ */}
           {step === 'search' && (
             <div className="flex flex-col gap-3">
               <div className="text-center mb-1">
-                <div className="text-emerald-400 text-xs font-bold">✓ Verified: {vaName}</div>
+                <div className="text-emerald-400 text-xs font-bold">✅ Verified — ForewArn is ready</div>
                 <div className="text-[10px] text-slate-500 font-bold tracking-[2px] uppercase mt-2">Who are you looking up?</div>
               </div>
 
@@ -259,6 +272,7 @@ export default function ForewarnProxy({ onClose }) {
                 value={clientPhone}
                 onChange={e => setClientPhone(fmtPhone(e.target.value))}
                 placeholder="Phone number"
+                autoFocus
                 className="w-full bg-[#1e293b] border border-slate-600/50 rounded-lg px-4 py-3 text-white/90 text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/60"
               />
 
@@ -308,12 +322,12 @@ export default function ForewarnProxy({ onClose }) {
             </div>
           )}
 
-          {/* ══ LOADING ══ */}
-          {step === 'loading' && (
+          {/* ══ SEARCHING ══ */}
+          {step === 'searching' && (
             <div className="flex flex-col items-center justify-center py-14 gap-3">
               <div className="w-10 h-10 border-[3px] border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
-              <p className="text-slate-400 text-sm font-medium">Logging into ForewArn...</p>
-              <p className="text-slate-600 text-[11px]">This may take 15-30 seconds</p>
+              <p className="text-slate-400 text-sm font-medium">Searching ForewArn...</p>
+              <p className="text-slate-600 text-[11px]">Pulling records now</p>
             </div>
           )}
 
@@ -324,7 +338,7 @@ export default function ForewarnProxy({ onClose }) {
                 <p className="text-red-400 text-sm font-bold">❌ {errorMsg}</p>
               </div>
               <button
-                onClick={() => setStep(isApproved ? 'search' : 'auth')}
+                onClick={() => { setErrorMsg(''); setStep('waiting_code'); }}
                 className="px-6 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700 transition-colors"
               >
                 Try Again
@@ -332,14 +346,13 @@ export default function ForewarnProxy({ onClose }) {
             </div>
           )}
 
-          {/* ══ RESULTS / POPUP ══ */}
-          {step === 'popup' && (
+          {/* ══ RESULTS ══ */}
+          {step === 'results' && (
             <div className="flex flex-col gap-3">
               <div className="text-center mb-2">
                 <div className="text-emerald-400 text-lg font-bold">✅ Results Found</div>
               </div>
 
-              {/* If we got result data, show quick summary */}
               {resultData && (
                 <div className="bg-[#1e293b] border border-slate-600/40 rounded-xl overflow-hidden mb-2">
                   {resultData.topLine && (
@@ -355,16 +368,6 @@ export default function ForewarnProxy({ onClose }) {
                     </div>
                   ))}
                 </div>
-              )}
-
-              {/* Open ForewArn in new tab for full details */}
-              {resultUrl && (
-                <button
-                  onClick={() => window.open(resultUrl, '_blank', 'width=1024,height=768')}
-                  className="w-full py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl font-bold text-sm tracking-wider hover:from-red-500 hover:to-red-600 transition-all shadow-lg"
-                >
-                  📄 OPEN FULL FOREWARN REPORT
-                </button>
               )}
 
               <div className="flex gap-2 mt-1">

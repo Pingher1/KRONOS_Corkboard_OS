@@ -3,6 +3,7 @@ import TRT_Veil from './TRT_Veil';
 import VA_Portal from './VA_Portal';
 import ForewarnProxy from './ForewarnProxy';
 import SocialCalendar from './SocialCalendar';
+import AccountSettings from './AccountSettings';
 const MENU_ITEMS = [
   "PROPERTY PRO VA",
   "FOLLOW UP BOSS",
@@ -95,6 +96,7 @@ function App() {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showDownloadAlert, setShowDownloadAlert] = useState(false);
   const [showForewarnProxy, setShowForewarnProxy] = useState(false);
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
   const [kronosEmail, setKronosEmail] = useState(() => localStorage.getItem('kronosEmail') || "");
   const [kronosPass, setKronosPass] = useState("");
   const [kronosPhone, setKronosPhone] = useState(() => localStorage.getItem('kronosPhone') || "");
@@ -1190,12 +1192,12 @@ function App() {
              <button 
                key={i} 
                onClick={() => {
-                 if (i === 3) setShowCalendar(true); // Index 3 is Calendar
+                 if (i === 0) setShowAccountSettings(true);
+                 else if (i === 3) setShowCalendar(true); // Index 3 is Calendar
                  else if (i === 7) setTheme(theme === 'daylight' ? 'monochrome' : 'daylight'); // Index 7 is Theme Toggle
                  else if (i === 6) { setShowFubSearch(!showFubSearch); setActiveAppPopup(null); }
                  else {
                    setActiveAppPopup(
-                     i === 0 ? "Account Data & Settings" : 
                      i === 1 ? "System Intelligence / Metrics" : 
                      i === 2 ? "Incoming Email Terminal" : 
                      i === 4 ? "Voice Operator Module" : 
@@ -1389,6 +1391,22 @@ function App() {
 
       {showForewarnProxy && (
          <ForewarnProxy onClose={() => setShowForewarnProxy(false)} />
+      )}
+
+      {showAccountSettings && (
+        <AccountSettings 
+          onClose={() => setShowAccountSettings(false)} 
+          theme={theme}
+          onLogout={() => {
+            localStorage.removeItem('kronosFirst'); localStorage.removeItem('kronosLast');
+            localStorage.removeItem('kronosPhone'); localStorage.removeItem('kronosEmail');
+            localStorage.removeItem('recoveryEmail'); localStorage.removeItem('recoveryPass');
+            localStorage.removeItem('socialUrl'); localStorage.removeItem('socialPass');
+            setIsVerified(false); setShowAccountSettings(false);
+            setKronosFirst(''); setKronosLast(''); setKronosPhone(''); setKronosEmail('');
+            setRecoveryEmail(''); setRecoveryPass(''); setSocialUrl(''); setSocialPass('');
+          }}
+        />
       )}
 
       {showArchiveModal && (
