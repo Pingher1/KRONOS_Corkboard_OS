@@ -59,9 +59,12 @@ export default function ForewarnProxy({ onClose }) {
       // Check whitelist by trying a lightweight request
       const r = await fetch(`${API}/whitelist`);
       const d = await r.json();
-      const match = d.vas?.find(v => 
-        v.name.toLowerCase() === vaName.trim().toLowerCase()
-      );
+      const inputName = vaName.trim().toLowerCase();
+      const inputFirst = inputName.split(' ')[0];
+      const match = d.vas?.find(v => {
+        const wl = v.name.toLowerCase();
+        return wl === inputName || wl === inputFirst || inputName.startsWith(wl);
+      });
       if (match) {
         setIsApproved(true);
         setStep('search');
