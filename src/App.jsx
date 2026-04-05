@@ -369,17 +369,26 @@ function App() {
                   <button 
                      onClick={() => {
                         const allowedUsers = [
+                           // ── PJ / Phillip ──
                            "phillip@therichardsonteam.com",
                            "phillip@therichardsonteamtx.com",
                            "trt@therichardsonteamtx.com",
                            "therichardsonteamtx@gmail.com",
                            "pjlrichardson@gmail.com",
                            "phillip@homeprosva.com",
+                           // ── Mera ──
+                           "mera@therichardsonteamtx.com",
+                           "mera@therichardsonteam.com",
+                           // ── Katelyn ──
                            "katelyn@therichardsonteamtx.com",
-                           "katelynn@therichardsonteam.com", // Keeping typo as fallback
+                           "katelyn@therichardsonteam.com",
+                           "katelynn@therichardsonteam.com",  // Double-n typo fallback
+                           "katelynn@therichardsonteamtx.com",
+                           // ── Kurt ──
                            "kurt.peterson52@gmail.com",
                            "kurt@therichardsonteam.com",
                            "kurt@therichardsonteamtx.com",
+                           // ── VA Team (Pakistan) ──
                            "esha@homeprosva.com",
                            "esha@therichardsonteam.com",
                            "hamza@homeprosva.com",
@@ -388,9 +397,14 @@ function App() {
                            "ntxtnow1@gmail.com",
                            "rafay@homeprosva.com",
                            "rafayyabbaxi@gmail.com",
+                           // ── External / Lenders ──
                            "dluza@guildmortgage.net",
                            "doug@dougluza.com",
-                           "jhp.hudson@gmail.com"
+                           "jhp.hudson@gmail.com",
+                           // ── System Accounts ──
+                           "admin@therichardsonteamtx.com",
+                           "kronos@therichardsonteamtx.com",
+                           "propertyprova@homeprosva.com"
                         ];
                         
                         // Core 10-digit phone roster (NO country codes - we normalize below)
