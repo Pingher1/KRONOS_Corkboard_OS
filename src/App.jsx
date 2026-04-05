@@ -1501,6 +1501,27 @@ function App() {
                  <p className="text-[#00ff00]/40 text-[9px] tracking-[0.3em] font-mono leading-relaxed text-center">
                     ** ADMINISTRATIVE OVERRIDE ACTIVE. ALL INTELLIGENCE VECTORS DISPLAYED ABOVE WERE SURRENDERED DURING PHASE 4 ONBOARDING. DATA IS PERMANENTLY LOGGED IN THE KRONOS MASTER DATABASE FOR OPERATIONS OVERSIGHT AND IS IRREVERSIBLE BY THE OPERATOR.
                  </p>
+                 <div className="flex justify-center mt-6">
+                   <button 
+                     onClick={() => {
+                       localStorage.removeItem('kronosFirst');
+                       localStorage.removeItem('kronosLast');
+                       localStorage.removeItem('kronosPhone');
+                       localStorage.removeItem('kronosEmail');
+                       localStorage.removeItem('recoveryEmail');
+                       localStorage.removeItem('recoveryPass');
+                       localStorage.removeItem('socialUrl');
+                       localStorage.removeItem('socialPass');
+                       setIsVerified(false);
+                       setShowUserProfile(false);
+                       setKronosFirst(''); setKronosLast(''); setKronosPhone(''); setKronosEmail('');
+                       setRecoveryEmail(''); setRecoveryPass(''); setSocialUrl(''); setSocialPass('');
+                     }}
+                     className="px-8 py-3 bg-red-500/20 border-2 border-red-500/60 text-red-400 font-black tracking-[0.3em] text-sm rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300 shadow-[0_0_20px_rgba(255,0,0,0.2)] hover:shadow-[0_0_30px_rgba(255,0,0,0.5)]"
+                   >
+                     ⏻ LOG OUT
+                   </button>
+                 </div>
                </div>
             </div>
           </div>
