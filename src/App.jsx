@@ -1015,7 +1015,7 @@ function App() {
                
                {/* SCREEN 1: PRIMARY GRID */}
                <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[70vh] items-center snap-center snap-always">
-                 {(() => { const baseTools = globalTools.length > 0 ? globalTools : ["AWAITING DEPLOYMENT"]; const filtered = baseTools.filter(t => t !== "FOREWARN PROXY" && t !== "POLAROID OVERRIDE"); const renderedTools = [...filtered, "FOREWARN PROXY", "POLAROID OVERRIDE"]; return renderedTools.map((tool, i) => (
+                 {(() => { const baseTools = globalTools.length > 0 ? globalTools : ["AWAITING DEPLOYMENT"]; const filtered = baseTools.filter(t => t !== "FOREWARN PROXY" && t !== "POLAROID OVERRIDE" && t !== "FOREWARN APP"); const renderedTools = [...filtered, "FOREWARN APP", "FOREWARN PROXY", "POLAROID OVERRIDE"]; return renderedTools.map((tool, i) => (
                    
                                        /* THE TILE CONTAINER */
                     <div key={tool} 

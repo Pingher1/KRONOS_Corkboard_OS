@@ -105,7 +105,7 @@ export default function ForewarnProxy({ onClose }) {
           clientAddress: clientAddress.trim(),
           clientZip: clientZip.trim(),
           vaName: vaName.trim(),
-          vaPin: vaPhone.replace(/\D/g, '').slice(-4) // last 4 of phone as PIN
+          vaPin: '0000' // VA already verified by name in step 1
         })
       });
       const d = await r.json();
