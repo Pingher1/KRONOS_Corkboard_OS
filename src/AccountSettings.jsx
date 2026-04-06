@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react';
 
 // ─── ACCOUNT DATA & SETTINGS ──────────────────────────────
 // FBI-style Personnel Jacket / Dossier design
-// Click photo to upload, all fields persist to localStorage
+// Click photo to upload, all fields persist to localStorage PER USER
 
-// Helper to load/save from localStorage
+// Get active user namespace — each user's data is isolated
+function getUserPrefix() {
+  const email = localStorage.getItem('kronosEmail') || 'default';
+  return `kronos_${email.split('@')[0].toLowerCase()}_`;
+}
+
+// Helper to load/save from localStorage with per-user namespacing
 function usePersistedField(key, fallback = '') {
-  const [val, setVal] = useState(() => localStorage.getItem(key) || fallback);
-  useEffect(() => { localStorage.setItem(key, val); }, [key, val]);
+  const prefix = getUserPrefix();
+  const fullKey = prefix + key;
+  const [val, setVal] = useState(() => localStorage.getItem(fullKey) || localStorage.getItem(key) || fallback);
+  useEffect(() => { localStorage.setItem(fullKey, val); }, [fullKey, val]);
   return [val, setVal];
 }
 

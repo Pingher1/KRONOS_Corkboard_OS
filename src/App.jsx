@@ -56,6 +56,79 @@ const playTickSound = () => {
     osc.stop(ctx.currentTime + 0.03);
   } catch (err) { }
 };
+// ═══════════════════════════════════════════════════════
+// KRONOS EMPLOYEE DIRECTORY — Pre-seeded roster
+// Used to auto-populate Personnel Jackets on first login
+// ═══════════════════════════════════════════════════════
+const EMPLOYEE_DIRECTORY = [
+  {
+    first: 'Phillip', last: 'Richardson', title: 'Owner',
+    phone: '(832) 867-2223', brokerage: 'The Richardson Team',
+    emails: ['phillip@therichardsonteamtx.com','pjlrichardson@gmail.com','therichardsonteamtx@gmail.com','phillip@homeprosva.com','trt@therichardsonteamtx.com','phillip@therichardsonteam.com'],
+    role: 'admin'
+  },
+  {
+    first: 'Kurt', last: 'Peterson', title: 'Admin',
+    phone: '(207) 595-2493', brokerage: 'The Richardson Team',
+    emails: ['kurt.peterson52@gmail.com','kurt@therichardsonteam.com','kurt@therichardsonteamtx.com'],
+    role: 'admin'
+  },
+  {
+    first: 'Katelyn', last: 'Bly', title: 'Co-Owner',
+    phone: '(361) 290-2460', brokerage: 'The Richardson Team',
+    emails: ['katelyn@therichardsonteamtx.com','katelyn@therichardsonteam.com','katelynn@therichardsonteam.com','katelynn@therichardsonteamtx.com','katelynannbly@gmail.com'],
+    role: 'co-owner'
+  },
+  {
+    first: 'Esha', last: 'Wilson', title: 'Virtual Assistant',
+    phone: '(832) 867-2223', brokerage: 'Home Pros VA',
+    emails: ['esha@homeprosva.com','esha@therichardsonteam.com'],
+    role: 'agent'
+  },
+  {
+    first: 'Hamza', last: 'Abbasi', title: 'Virtual Assistant',
+    phone: '(832) 674-1203', brokerage: 'Home Pros VA',
+    emails: ['hamza@homeprosva.com','hk8883471@gmail.com'],
+    role: 'agent'
+  },
+  {
+    first: 'Kashan', last: 'Ahmed', title: 'Virtual Assistant',
+    phone: '', brokerage: 'Home Pros VA',
+    emails: ['kashan@homeprosva.com','ntxtnow1@gmail.com'],
+    role: 'agent'
+  },
+  {
+    first: 'Rafay', last: 'Abbasi', title: 'Virtual Assistant',
+    phone: '', brokerage: 'Home Pros VA',
+    emails: ['rafay@homeprosva.com','rafayyabbaxi@gmail.com'],
+    role: 'agent'
+  },
+  {
+    first: 'John', last: 'Hudson', title: 'Lender',
+    phone: '(817) 247-4766', brokerage: 'Independent',
+    emails: ['jhp.hudson@gmail.com'],
+    role: 'lender'
+  },
+  {
+    first: 'Doug', last: 'Luza', title: 'Lender',
+    phone: '(346) 452-1666', brokerage: 'Guild Mortgage',
+    emails: ['dluza@guildmortgage.net','doug@dougluza.com'],
+    role: 'lender'
+  },
+  {
+    first: 'Mera', last: 'Richardson', title: 'Admin (Part-Time)',
+    phone: '', brokerage: 'The Richardson Team',
+    emails: ['mera@therichardsonteamtx.com','mera@therichardsonteam.com','merarichardson@gmail.com','mera.richardson@gmail.com'],
+    role: 'admin'
+  }
+];
+
+// Lookup helper — finds employee by any of their emails
+function findEmployee(email) {
+  if (!email) return null;
+  const e = email.toLowerCase().trim();
+  return EMPLOYEE_DIRECTORY.find(emp => emp.emails.some(em => em.toLowerCase() === e)) || null;
+}
 
 function App() {
   const [activeMenu, setActiveMenu] = useState("PROPERTY PRO VA");
@@ -467,6 +540,13 @@ function App() {
                         const phoneMatch = parsedPhone.length === 10 && allowedPhones.includes(parsedPhone);
                         
                         if (exactEmailMatch || fuzzyEmailMatch || phoneMatch) {
+                           // Auto-populate from Employee Directory
+                           const emp = findEmployee(kronosEmail);
+                           if (emp) {
+                             if (!kronosFirst) setKronosFirst(emp.first);
+                             if (!kronosLast) setKronosLast(emp.last);
+                             if (!kronosPhone && emp.phone) setKronosPhone(emp.phone);
+                           }
                            setLoginPhase('dispatch');
                            setTimeout(() => setLoginPhase('pin'), 3500);
                         } else {
@@ -575,12 +655,28 @@ function App() {
                               alert("Recovery email is required to complete setup.");
                               return;
                            }
-                           // Track email verification status
-                           localStorage.setItem('emailSyncVerified', 'false');
-                           localStorage.setItem('emailSyncDate', new Date().toISOString());
-                           localStorage.setItem('emailSyncTarget', recoveryEmail);
+                           // Track email verification status + per-user namespace
+                           const userPrefix = `kronos_${(kronosEmail || "default").split("@")[0].toLowerCase()}_`;
+                           localStorage.setItem("emailSyncVerified", "false");
+                           localStorage.setItem("emailSyncDate", new Date().toISOString());
+                           localStorage.setItem("emailSyncTarget", recoveryEmail);
+                           localStorage.setItem("kronosActiveUser", kronosEmail);
+                           localStorage.setItem(userPrefix + "kronosFirst", kronosFirst);
+                           localStorage.setItem(userPrefix + "kronosLast", kronosLast);
+                           localStorage.setItem(userPrefix + "kronosPhone", kronosPhone);
+                           localStorage.setItem(userPrefix + "kronosEmail", kronosEmail);
+                           localStorage.setItem(userPrefix + "recoveryEmail", recoveryEmail);
+                           localStorage.setItem(userPrefix + "onboarded", "true");
+                           // Pre-seed from Employee Directory
+                           const emp = findEmployee(kronosEmail);
+                           if (emp) {
+                             localStorage.setItem(userPrefix + "kronosTitle", emp.title);
+                             localStorage.setItem(userPrefix + "kronosBrokerage", emp.brokerage);
+                             localStorage.setItem(userPrefix + "kronosRole", emp.role);
+                             if (emp.phone) { localStorage.setItem(userPrefix + "kronosPhone", emp.phone); }
+                           }
                            setIsVerified(true);
-                           setLoginPhase('init'); // Reset pipeline
+                           setLoginPhase("init");
                            setKronosPass("");
                         }} 
                         className="w-2/3 py-4 bg-[#00ff00] hover:bg-white border-2 border-[#00ff00] text-black font-black tracking-[0.2em] text-xs uppercase rounded-lg transition-all shadow-[0_0_30px_rgba(0,255,0,0.5)] hover:shadow-[0_0_50px_rgba(255,255,255,0.8)]"
@@ -1233,12 +1329,13 @@ function App() {
                key={i} 
                onClick={() => {
                  if (i === 0) setShowAccountSettings(true);
+                 else if (i === 1) window.open('https://app.followupboss.com/2/reporting', '_blank'); // FUB Reports
                  else if (i === 3) setShowCalendar(true); // Index 3 is Calendar
                  else if (i === 7) setTheme(theme === 'daylight' ? 'monochrome' : 'daylight'); // Index 7 is Theme Toggle
                  else if (i === 6) { setShowFubSearch(!showFubSearch); setActiveAppPopup(null); }
                  else {
                    setActiveAppPopup(
-                     i === 1 ? "System Intelligence / Metrics" : 
+                     i === 1 ? "FUB Reports & Stats" : 
                      i === 2 ? "Incoming Email Terminal" : 
                      i === 4 ? "Voice Operator Module" : 
                      i === 5 ? "Direct SMS Dispatch" : 
